@@ -16,9 +16,9 @@ if __name__ == "__main__":
         QCoreApplication.setApplicationName("CAPOUNET Sync")
         QCoreApplication.setOrganizationName("CAPOOUNET")
         QCoreApplication.setOrganizationDomain("capounet.unet.edu.ve")
-        settings = Settings(2, "8jwf7A0DbakpJ7p4HKCPJXJogwGFyWPkDLsDYngx", "http://capounet.test")
+        Settings.loadSettings(2, "8jwf7A0DbakpJ7p4HKCPJXJogwGFyWPkDLsDYngx")
 
-        AccessDialog.getTokens(settings)
+        AccessDialog.obtainConfiguration()
 
         """mainWindow = MainWindow(settings)
         mainWindow.show()

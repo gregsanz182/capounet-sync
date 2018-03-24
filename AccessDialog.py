@@ -2,12 +2,12 @@ import requests
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
+from RequestsHandler import RequestsHandler
 
 class AccessDialog(QDialog):
 
-    def __init__(self, settings, padre=None):
+    def __init__(self, padre=None):
         super().__init__(padre)
-        self.settings = settings
         self.init_components()
 
     def init_components(self):
@@ -49,11 +49,11 @@ class AccessDialog(QDialog):
         self.botonAceptar.clicked.connect(self.sendRequest)
 
     @staticmethod
-    def getTokens(settings):
-        d = AccessDialog(settings)
+    def obtainConfiguration():
+        d = AccessDialog()
         d.show()
         d.exec_()
         return "hola"
 
     def sendRequest(self):
-        pass
+        RequestsHandler.getAccessToken(self.usernameInput.text(), self.passwordInput.text(), "http://capounet.test")
