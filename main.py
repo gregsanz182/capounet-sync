@@ -2,18 +2,23 @@ import sys
 import csv
 import json
 import requests
+import qdarkstyle
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QCoreApplication
 from Settings import Settings
 from MainWindow import MainWindow
+from AccessDialog import AccessDialog
 
 if __name__ == "__main__":
     try:
         mainApp = QApplication(sys.argv)
+        mainApp.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
         QCoreApplication.setApplicationName("CAPOUNET Sync")
         QCoreApplication.setOrganizationName("CAPOOUNET")
         QCoreApplication.setOrganizationDomain("capounet.unet.edu.ve")
         settings = Settings(2, "8jwf7A0DbakpJ7p4HKCPJXJogwGFyWPkDLsDYngx", "http://capounet.test")
+
+        AccessDialog.getTokens(settings)
 
         """mainWindow = MainWindow(settings)
         mainWindow.show()
