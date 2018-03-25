@@ -9,7 +9,8 @@ class Settings():
     accessToken = None
     refreshToken = None
     QSettings = None
-    ahorrosWebFile = None
+    sociosFilePath = (True, "")
+    prestamosFilePath = (True, "")
     clientID = None
     clientSecret = None
     domain = None
@@ -20,6 +21,7 @@ class Settings():
         "6 Horas",
         "12 Horas"
     ]
+    refreshRate = 0
     globalStyle = """
         QLabel{
             color: #BDBDBD;
@@ -49,10 +51,11 @@ class Settings():
             cls.qsettings.setValue("tokens/access_token", f.encrypt(str.encode("{} {} {}".format(cls.accessToken, cls.clientSecret, cls.clientID))))
         if cls.refreshToken:
             cls.qsettings.setValue("tokens/refresh_token", f.encrypt(str.encode("{} {} {}".format(cls.refreshToken, cls.clientSecret, cls.clientID))))
-        if cls.ahorrosWebFile:
-            cls.qsettings.setValue("paths/ahorros_web_file")
         if cls.accessTokenExpire:
             cls.qsettings.setValue("tokens/access_token_expire", cls.accessTokenExpire)
+        cls.qsettings.setValue("paths/socios_file_path", cls.sociosFilePath)
+        cls.qsettings.setValue("paths/prestamos_file_path", cls.prestamosFilePath)
+        cls.qsettings.setValue("others/refresh_rate", cls.refreshRate)
         cls.qsettings.sync()
 
     @classmethod
@@ -65,8 +68,18 @@ class Settings():
             cls.accessToken = cls.getSetting(bytes.decode(f.decrypt(cls.qsettings.value("tokens/access_token"))))
         if cls.qsettings.value("tokens/refresh_token"):
             cls.refreshToken = cls.getSetting(bytes.decode(f.decrypt(cls.qsettings.value("tokens/refresh_token"))))
-        cls.ahorrosWebFile = cls.qsettings.value("paths/ahorros_web_file")
         cls.accessTokenExpire = cls.qsettings.value("tokens/access_token_expire")
+        cls.sociosFilePath = cls.qsettings.value("paths/socios_file_path")
+        if cls.sociosFilePath is None:
+            cls.sociosFilePath = (True, "")
+        cls.prestamosFilePath = cls.qsettings.value("paths/prestamos_file_path")
+        if cls.prestamosFilePath is None:
+            cls.prestamosFilePath = (True, "")
+        cls.refreshRate = cls.qsettings.value("others/refresh_rate")
+        if cls.refreshRate is None:
+            cls.refreshRate = 0
+        else:
+            cls.refreshRate = int(cls.refreshRate)
 
     @classmethod
     def getSetting(cls, setting):
