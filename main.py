@@ -8,6 +8,7 @@ from PyQt5.QtCore import QCoreApplication
 from Settings import Settings
 from MainWindow import MainWindow
 from AccessDialog import AccessDialog
+from OptionsDialog import OptionsDialog
 
 if __name__ == "__main__":
     try:
@@ -21,6 +22,8 @@ if __name__ == "__main__":
 
         if Settings.isInit() == False:
             return_code = AccessDialog.obtainConfiguration()
+            if return_code == 1:
+                OptionsDialog.openDialog()
 
         if return_code == 1:
             mainWindow = MainWindow()

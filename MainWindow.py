@@ -1,6 +1,8 @@
 import sys
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLabel, QWidget
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLabel, QWidget, QLineEdit, QPushButton
 from PyQt5.QtCore import QSettings
+from Settings import Settings
+from OptionsDialog import OptionsDialog
 
 class MainWindow(QMainWindow):
 
@@ -15,6 +17,11 @@ class MainWindow(QMainWindow):
         self.centralWidget = QWidget()
         self.setCentralWidget(self.centralWidget)
         self.centralWidgetLayout = QVBoxLayout(self.centralWidget)
-        self.centralWidget.setStyleSheet("QLabel{color: #BDBDBD;}")
+        self.centralWidget.setStyleSheet(Settings.globalStyle)
 
         self.centralWidgetLayout.addWidget(QLabel("hola"))
+        self.centralWidgetLayout.addWidget(QLineEdit(""))
+        self.centralWidgetLayout.addWidget(QLineEdit(""))
+        self.centralWidgetLayout.addWidget(QPushButton("LALALALAL"))
+
+        OptionsDialog.openDialog()

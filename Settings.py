@@ -14,6 +14,12 @@ class Settings():
     clientSecret = None
     domain = None
     accessTokenExpire = None
+    refreshOptions = [
+        "1 Hora",
+        "3 Horas",
+        "6 Horas",
+        "12 Horas"
+    ]
     globalStyle = """
         QLabel{
             color: #BDBDBD;
@@ -21,6 +27,18 @@ class Settings():
         QLineEdit{
             font-size: 13px; 
             height: 18px;
+        }
+        QPushButton#normal_button{
+            height: 25px; 
+            background-color: #232629;
+        }
+        QPushButton#accept_button{
+            height: 25px; 
+            background-color: #3DAEE9; 
+            border-color: #515962;
+        }
+        QComboBox QAbstractItemView::item {
+            min-height: 25px;
         }
     """
 

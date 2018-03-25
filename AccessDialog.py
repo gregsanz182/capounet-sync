@@ -10,8 +10,8 @@ class AccessDialog(QDialog):
     ERROR_MESSAGE = 0
     DEFAULT_MESSAGE = 1
 
-    def __init__(self, padre=None):
-        super().__init__(padre)
+    def __init__(self, parent=None):
+        super().__init__(parent)
         self.init_components()
 
     def init_components(self):
@@ -30,9 +30,9 @@ class AccessDialog(QDialog):
         self.passwordInput.setEchoMode(QLineEdit.Password)
         self.botonAceptar = QPushButton("Aceptar")
         self.botonAceptar.setFixedHeight(40)
+        self.botonAceptar.setObjectName("accept_button")
         self.messageLabel = QLabel("")
         self.messageLabel.setWordWrap(True)
-        self.messageLabel.setFixedHeight(60)
         self.messageLabel.setAlignment(Qt.AlignCenter)
 
         self.layout.addSpacing(10)
