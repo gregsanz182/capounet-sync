@@ -14,6 +14,15 @@ class Settings():
     clientSecret = None
     domain = None
     accessTokenExpire = None
+    globalStyle = """
+        QLabel{
+            color: #BDBDBD;
+        }
+        QLineEdit{
+            font-size: 13px; 
+            height: 18px;
+        }
+    """
 
     @classmethod
     def saveSettings(cls):

@@ -17,14 +17,16 @@ if __name__ == "__main__":
         QCoreApplication.setOrganizationName("CAPOOUNET")
         QCoreApplication.setOrganizationDomain("capounet.unet.edu.ve")
         Settings.loadSettings(2, "8jwf7A0DbakpJ7p4HKCPJXJogwGFyWPkDLsDYngx")
+        return_code = 1
 
         if Settings.isInit() == False:
-            AccessDialog.obtainConfiguration()
+            return_code = AccessDialog.obtainConfiguration()
 
-        """mainWindow = MainWindow(settings)
-        mainWindow.show()
+        if return_code == 1:
+            mainWindow = MainWindow()
+            mainWindow.show()
+            mainApp.exec_()
 
-        mainApp.exec_()"""
         sys.exit(0)
 
     except NameError:
