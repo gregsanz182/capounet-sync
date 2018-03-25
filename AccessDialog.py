@@ -7,6 +7,9 @@ from Settings import Settings
 
 class AccessDialog(QDialog):
 
+    ERROR_MESSAGE = 0
+    DEFAULT_MESSAGE = 1
+
     def __init__(self, padre=None):
         super().__init__(padre)
         self.init_components()
@@ -42,6 +45,7 @@ class AccessDialog(QDialog):
         self.messageLabel.setStyleSheet("font-size: 13px; color: #F34335;")
         self.messageLabel.setWordWrap(True)
         self.messageLabel.setFixedHeight(60)
+        self.messageLabel.setAlignment(Qt.AlignCenter)
 
         self.layout.addSpacing(10)
         self.layout.addWidget(self.labelLogo)
@@ -73,8 +77,9 @@ class AccessDialog(QDialog):
         if len(self.passwordInput.text()) == 0:
             message += 'El campo "Contraseña" es requerido'
         if len(message) > 0:
-            self.messageLabel.setText(message)
+            self.printMessage(message, self.ERROR_MESSAGE)
             return
+        self.printMessage("Autenticando...")
         try:
             data = RequestsHandler.getAccessToken(self.usernameInput.text(), self.passwordInput.text(), self.domainInput.text())
             Settings.accessToken = data["access_token"]
@@ -83,4 +88,12 @@ class AccessDialog(QDialog):
             Settings.saveSettings()
             self.accept()
         except RequestsHandlerException as e:
-            self.messageLabel.setText(e.message)
+            self.printMessage(e.message, self.ERROR_MESSAGE)
+
+    def printMessage(self, string, message_type=DEFAULT_MESSAGE):
+        self.messageLabel.setText(string)
+        if message_type == self.DEFAULT_MESSAGE:
+            self.messageLabel.setStyleSheet("font-size: 13px; color: #BDBDBD;")
+        elif message_type == self.ERROR_MESSAGE:
+            self.messageLabel.setStyleSheet("font-size: 13px; color: #F34335;")
+        self.repaint()
