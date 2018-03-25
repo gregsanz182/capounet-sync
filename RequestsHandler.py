@@ -14,6 +14,25 @@ class RequestsHandler():
             "password": password,
             "scope": "*"
         }
-        print(data)
-        r = requests.post(Settings.getTokenUrl(), data=data)
-        print(r)
+        try:
+            r = requests.post(Settings.getTokenUrl(), data=data)
+            if r.status_code == 200:
+                return r.json()
+            if r.status_code == 404:
+                raise RequestsHandlerException("La URL del dominio no es válida.")
+            if r.status_code == 401:
+                raise RequestsHandlerException("Credenciales incorrectas")
+            if r.status_code == 500:
+                raise RequestsHandlerException("Error interno del servidor (500)")
+            raise RequestsHandlerException("Ocurrió un error en la petición.\nCódigo HTTP: {}".format(r.status_code))
+        except requests.exceptions.InvalidURL as e:
+            raise RequestsHandlerException("La URL del dominio no es válida.", e)
+        except requests.exceptions.MissingSchema as e:
+            raise RequestsHandlerException("El dominio no es valido.\nVerifica que incluya 'http://' o 'https://'", e)
+
+class RequestsHandlerException(ValueError):
+
+    def __init__(self, message, original_exception=None):
+        super().__init__(message)
+        self.message = message
+        self.original_exception = original_exception
