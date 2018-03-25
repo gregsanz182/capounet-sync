@@ -23,5 +23,4 @@ class MainWindow(QMainWindow):
         self.centralWidgetLayout.addWidget(QLineEdit(""))
         self.centralWidgetLayout.addWidget(QLineEdit(""))
         self.centralWidgetLayout.addWidget(QPushButton("LALALALAL"))
-
-        OptionsDialog.openDialog()
+        

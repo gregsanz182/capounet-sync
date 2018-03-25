@@ -23,7 +23,7 @@ if __name__ == "__main__":
         if Settings.isInit() == False:
             return_code = AccessDialog.obtainConfiguration()
             if return_code == 1:
-                OptionsDialog.openDialog()
+                return_code = OptionsDialog.openDialog()
 
         if return_code == 1:
             mainWindow = MainWindow()

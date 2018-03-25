@@ -79,7 +79,7 @@ class OptionsDialog(QDialog):
     def openDialog(parent = None):
         d = OptionsDialog(parent)
         d.show()
-        d.exec_()
+        return d.exec_()
 
 class HLayout(QHBoxLayout):
 
