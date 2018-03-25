@@ -29,6 +29,10 @@ class RequestsHandler():
             raise RequestsHandlerException("La URL del dominio no es válida.", e)
         except requests.exceptions.MissingSchema as e:
             raise RequestsHandlerException("El dominio no es valido.\nVerifica que incluya 'http://' o 'https://'", e)
+        except requests.exceptions.ConnectionError as e:
+            raise RequestsHandlerException("Error en la conexión.\nVerifica que exista conexión a internet y vuelve a intentarlo.", e)
+        except requests.exceptions.ConnectTimeout as e:
+            raise RequestsHandlerException("Error en la conexión.\nVerifica que exista conexión a internet y vuelve a intentarlo.", e)
 
 class RequestsHandlerException(ValueError):
 
