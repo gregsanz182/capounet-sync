@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 from RequestsHandler import RequestsHandler, RequestsHandlerException
+from Settings import Settings
 
 class AccessDialog(QDialog):
 
@@ -65,6 +66,11 @@ class AccessDialog(QDialog):
 
     def sendRequest(self):
         try:
-            RequestsHandler.getAccessToken(self.usernameInput.text(), self.passwordInput.text(), self.domainInput.text())
+            data = RequestsHandler.getAccessToken(self.usernameInput.text(), self.passwordInput.text(), self.domainInput.text())
+            Settings.accessToken = data["access_token"]
+            Settings.refreshToken = data["refresh_token"]
+            Settings.accessTokenExpire = data["expires_in"]
+            Settings.saveSettings()
+            self.close()
         except RequestsHandlerException as e:
             self.messageLabel.setText(e.message)

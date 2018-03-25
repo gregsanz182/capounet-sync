@@ -13,6 +13,7 @@ class Settings():
     clientID = None
     clientSecret = None
     domain = None
+    accessTokenExpire = None
 
     @classmethod
     def saveSettings(cls):
@@ -23,6 +24,8 @@ class Settings():
             cls.qsettings.setValue("tokens/refresh_token", f.encrypt(str.encode("{} {} {}".format(cls.refreshToken, cls.clientSecret, cls.clientID))))
         if cls.ahorrosWebFile:
             cls.qsettings.setValue("paths/ahorros_web_file")
+        if cls.accessTokenExpire:
+            cls.qsettings.setValue("tokens/access_token_expire", cls.accessTokenExpire)
         cls.qsettings.sync()
 
     @classmethod
@@ -36,6 +39,7 @@ class Settings():
         if cls.qsettings.value("tokens/refresh_token"):
             cls.refreshToken = cls.getSetting(f.decrypt(cls.qsettings.value("tokens/refresh_token")))
         cls.ahorrosWebFile = cls.qsettings.value("paths/ahorros_web_file")
+        cls.accessTokenExpire = cls.qsettings.value("tokens/access_token_expire")
 
     @classmethod
     def getSetting(cls, setting):
