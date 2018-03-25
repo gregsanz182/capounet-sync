@@ -16,6 +16,7 @@ class AccessDialog(QDialog):
         self.layout = QVBoxLayout(self)
         self.layout.setAlignment(Qt.AlignTop)
         self.setFixedWidth(320)
+        self.setFixedHeight(440)
         self.labelLogo = QLabel()
         self.labelLogo.setPixmap(QPixmap("logo.png"))
         self.labelLogo.setAlignment(Qt.AlignCenter)
@@ -62,15 +63,24 @@ class AccessDialog(QDialog):
         d = AccessDialog()
         d.show()
         d.exec_()
-        return "hola"
 
     def sendRequest(self):
+        message = ""
+        if len(self.domainInput.text()) == 0:
+            message += 'El campo "Dominio" es requerido\n'
+        if len(self.usernameInput.text()) == 0:
+            message += 'El campo "Nombre de usuario" es requerido\n'
+        if len(self.passwordInput.text()) == 0:
+            message += 'El campo "Contraseña" es requerido'
+        if len(message) > 0:
+            self.messageLabel.setText(message)
+            return
         try:
             data = RequestsHandler.getAccessToken(self.usernameInput.text(), self.passwordInput.text(), self.domainInput.text())
             Settings.accessToken = data["access_token"]
             Settings.refreshToken = data["refresh_token"]
             Settings.accessTokenExpire = data["expires_in"]
             Settings.saveSettings()
-            self.close()
+            self.accept()
         except RequestsHandlerException as e:
             self.messageLabel.setText(e.message)

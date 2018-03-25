@@ -35,16 +35,16 @@ class Settings():
         cls.qsettings = QSettings("settings.ini", QSettings.IniFormat)
         f = Fernet(cls.secret)
         if cls.qsettings.value("tokens/access_token"):
-            cls.accessToken = cls.getSetting(f.decrypt(cls.qsettings.value("tokens/access_token")))
+            cls.accessToken = cls.getSetting(bytes.decode(f.decrypt(cls.qsettings.value("tokens/access_token"))))
         if cls.qsettings.value("tokens/refresh_token"):
-            cls.refreshToken = cls.getSetting(f.decrypt(cls.qsettings.value("tokens/refresh_token")))
+            cls.refreshToken = cls.getSetting(bytes.decode(f.decrypt(cls.qsettings.value("tokens/refresh_token"))))
         cls.ahorrosWebFile = cls.qsettings.value("paths/ahorros_web_file")
         cls.accessTokenExpire = cls.qsettings.value("tokens/access_token_expire")
 
     @classmethod
     def getSetting(cls, setting):
         parts = setting.split(" ")
-        if len(parts) == 3 and parts[1] == cls.clientSecret and parts[2] == cls.clientID:
+        if len(parts) == 3 and parts[1] == cls.clientSecret and int(parts[2]) == cls.clientID:
             return parts[0]
         return None
 

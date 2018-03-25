@@ -18,7 +18,8 @@ if __name__ == "__main__":
         QCoreApplication.setOrganizationDomain("capounet.unet.edu.ve")
         Settings.loadSettings(2, "8jwf7A0DbakpJ7p4HKCPJXJogwGFyWPkDLsDYngx")
 
-        AccessDialog.obtainConfiguration()
+        if Settings.isInit() == False:
+            AccessDialog.obtainConfiguration()
 
         """mainWindow = MainWindow(settings)
         mainWindow.show()
