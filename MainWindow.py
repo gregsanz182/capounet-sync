@@ -5,14 +5,14 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 from Settings import Settings
 from OptionsDialog import OptionsDialog
-from GuiTools import AlignedLabel
+from GuiTools import AlignedLabel, InformationLabel
 
 class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
         self.setWindowTitle("CAPOUNET Sync")
-        self.setFixedWidth(400)
+        self.setFixedWidth(450)
 
         self.init_components()
 
@@ -45,6 +45,7 @@ class StatusPanel(QFrame):
             }
         """)
         self.setObjectName("status_panel")
+        self.setFixedHeight(250)
 
         self.layout = QVBoxLayout(self)
         self.iconLabel = AlignedLabel(Qt.AlignCenter)
@@ -52,14 +53,16 @@ class StatusPanel(QFrame):
         self.iconLabel.setFixedHeight(60)
         self.titleLabel = AlignedLabel(Qt.AlignCenter, title)
         self.titleLabel.setStyleSheet("font-size: 13px; font-weight: bold;")
-        self.lastSyncLabel = AlignedLabel(Qt.AlignCenter, "12:52pm 26/03/2018")
-        self.message = AlignedLabel(Qt.AlignCenter)
-        self.message.setFixedHeight(100)
+        self.lastSyncLabel = InformationLabel("Última sincronización exitosa:\n02:35pm 12-06-2018", InformationLabel.DATE)
+        self.message = InformationLabel("", InformationLabel.DISABLE)
 
         self.layout.addSpacing(5)
         self.layout.addWidget(self.titleLabel)
         self.layout.addSpacing(5)
         self.layout.addWidget(self.iconLabel)
-        self.layout.addWidget(self.message)
-        self.layout.addWidget(AlignedLabel(Qt.AlignCenter, "Última sincronización exitosa"))
+        self.layout.addSpacing(15)
         self.layout.addWidget(self.lastSyncLabel)
+        self.layout.addWidget(self.message)
+        self.layout.addStretch()
+
+        self.message.setMessage("Todo funciona correctamente", InformationLabel.SUCCESS)
