@@ -1,8 +1,9 @@
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QCheckBox, QLabel, QHBoxLayout, QLineEdit, QToolButton, QPushButton
+from PyQt5.QtWidgets import QDialog, QVBoxLayout, QCheckBox, QLabel, QLineEdit, QToolButton, QPushButton
 from PyQt5.QtWidgets import QComboBox, QStyledItemDelegate, QFileDialog
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QSize, Qt
 from Settings import Settings
+from GuiTools import HLayout
 
 class OptionsDialog(QDialog):
 
@@ -80,13 +81,3 @@ class OptionsDialog(QDialog):
         d = OptionsDialog(parent)
         d.show()
         return d.exec_()
-
-class HLayout(QHBoxLayout):
-
-    def __init__(self, left_widget, right_widget, stretch=False, parent = None):
-        super().__init__(parent)
-        self.addWidget(left_widget)
-        self.addWidget(right_widget)
-
-        if stretch:
-            self.addStretch()

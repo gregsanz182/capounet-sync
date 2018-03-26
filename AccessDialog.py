@@ -34,6 +34,7 @@ class AccessDialog(QDialog):
         self.messageLabel = QLabel("")
         self.messageLabel.setWordWrap(True)
         self.messageLabel.setAlignment(Qt.AlignCenter)
+        self.messageLabel.setFixedHeight(60)
 
         self.layout.addSpacing(10)
         self.layout.addWidget(self.labelLogo)
