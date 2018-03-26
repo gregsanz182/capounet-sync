@@ -7,7 +7,8 @@ if sys.platform == 'win32':
 
 options = {
     'build_exe': {
-        'includes': 'atexit'
+        'includes': ['atexit'],
+        "packages": ["multiprocessing", "idna", "cffi"]
     }
 }
 
