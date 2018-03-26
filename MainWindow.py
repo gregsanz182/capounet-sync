@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLabel, QWidget, QLineEdit, QPushButton
-from PyQt5.QtWidgets import QFrame, QHBoxLayout, QTextEdit
+from PyQt5.QtWidgets import QFrame, QHBoxLayout, QTextEdit, QApplication
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QIcon
 from Settings import Settings
@@ -49,6 +49,14 @@ class MainWindow(QMainWindow):
         self.text = QTextEdit()
         self.text.setReadOnly(True)
         self.centralWidgetLayout.addWidget(self.text)
+
+        self.makeConnections()
+
+    def makeConnections(self):
+        self.configButton.clicked.connect(self.openOptions)
+
+    def openOptions(self):
+        OptionsDialog.openDialog(self)
         
 class StatusPanel(QFrame):
 
