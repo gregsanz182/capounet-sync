@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QHBoxLayout, QLabel, QWidget
+from PyQt5.QtWidgets import QHBoxLayout, QLabel, QWidget, QToolButton
 from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QIcon
 
 class HLayout(QHBoxLayout):
 
@@ -59,3 +59,11 @@ class InformationLabel(QWidget):
             return QPixmap("date_icon.png")
         elif message_type == self.DISABLE:
             return QPixmap()
+
+class ToolButton(QToolButton):
+
+    def __init__(self, text="", icon=QIcon(), parent=None):
+        super().__init__(parent)
+        self.setText(text)
+        self.setIcon(icon)
+        self.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)

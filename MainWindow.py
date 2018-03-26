@@ -1,11 +1,11 @@
 import sys
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLabel, QWidget, QLineEdit, QPushButton
-from PyQt5.QtWidgets import QFrame, QHBoxLayout
+from PyQt5.QtWidgets import QFrame, QHBoxLayout, QTextEdit
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QIcon
 from Settings import Settings
 from OptionsDialog import OptionsDialog
-from GuiTools import AlignedLabel, InformationLabel
+from GuiTools import AlignedLabel, InformationLabel, ToolButton
 
 class MainWindow(QMainWindow):
 
@@ -13,6 +13,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("CAPOUNET Sync")
         self.setFixedWidth(450)
+        self.setFixedHeight(500)
 
         self.init_components()
 
@@ -25,11 +26,29 @@ class MainWindow(QMainWindow):
         self.topLayout = QHBoxLayout()
         self.centralWidgetLayout.addLayout(self.topLayout)
         
+        self.logoLabel = QLabel()
+        self.logoLabel.setPixmap(QPixmap("logo_2.png"))
+        self.configButton = QPushButton("Ajustes")
+        self.configButton.setObjectName("normal_button")
+        self.configButton.setStyleSheet("color: #B6B6B6; font-size: 12px;")
+        self.configButton.setIcon(QIcon("cog.png"))
+        self.topLayout.addSpacing(5)
+        self.topLayout.addWidget(self.logoLabel)
+        self.topLayout.addStretch()
+        self.topLayout.addWidget(self.configButton)
+
+        self.middleLayout = QHBoxLayout()
+        self.centralWidgetLayout.addLayout(self.middleLayout)
+        
         self.sociosPanel = StatusPanel("Socios y Ahorros", "wallet.png")
-        self.topLayout.addWidget(self.sociosPanel)
+        self.middleLayout.addWidget(self.sociosPanel)
 
         self.prestamosPanel = StatusPanel("Prestamos", "dues.png")
-        self.topLayout.addWidget(self.prestamosPanel)
+        self.middleLayout.addWidget(self.prestamosPanel)
+
+        self.text = QTextEdit()
+        self.text.setReadOnly(True)
+        self.centralWidgetLayout.addWidget(self.text)
         
 class StatusPanel(QFrame):
 
@@ -45,7 +64,7 @@ class StatusPanel(QFrame):
             }
         """)
         self.setObjectName("status_panel")
-        self.setFixedHeight(250)
+        self.setFixedHeight(275)
 
         self.layout = QVBoxLayout(self)
         self.iconLabel = AlignedLabel(Qt.AlignCenter)
