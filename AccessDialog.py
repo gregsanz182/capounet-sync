@@ -22,7 +22,7 @@ class AccessDialog(QDialog):
         self.setFixedHeight(440)
         self.setStyleSheet(Settings.globalStyle)
         self.labelLogo = QLabel()
-        self.labelLogo.setPixmap(QPixmap("logo.png"))
+        self.labelLogo.setPixmap(QPixmap("res/logo.png"))
         self.labelLogo.setAlignment(Qt.AlignCenter)
         self.domainInput = QLineEdit("http://capounet.test")
         self.usernameInput = QLineEdit()

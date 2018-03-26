@@ -27,11 +27,11 @@ class MainWindow(QMainWindow):
         self.centralWidgetLayout.addLayout(self.topLayout)
         
         self.logoLabel = QLabel()
-        self.logoLabel.setPixmap(QPixmap("logo_2.png"))
+        self.logoLabel.setPixmap(QPixmap("res/logo_2.png"))
         self.configButton = QPushButton("Ajustes")
         self.configButton.setObjectName("normal_button")
         self.configButton.setStyleSheet("color: #B6B6B6; font-size: 12px;")
-        self.configButton.setIcon(QIcon("cog.png"))
+        self.configButton.setIcon(QIcon("res/cog.png"))
         self.topLayout.addSpacing(5)
         self.topLayout.addWidget(self.logoLabel)
         self.topLayout.addStretch()
@@ -40,10 +40,10 @@ class MainWindow(QMainWindow):
         self.middleLayout = QHBoxLayout()
         self.centralWidgetLayout.addLayout(self.middleLayout)
         
-        self.sociosPanel = StatusPanel("Socios y Ahorros", "wallet.png")
+        self.sociosPanel = StatusPanel("Socios y Ahorros", "res/wallet.png")
         self.middleLayout.addWidget(self.sociosPanel)
 
-        self.prestamosPanel = StatusPanel("Prestamos", "dues.png")
+        self.prestamosPanel = StatusPanel("Prestamos", "res/dues.png")
         self.middleLayout.addWidget(self.prestamosPanel)
 
         self.text = QTextEdit()

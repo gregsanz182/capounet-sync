@@ -50,13 +50,13 @@ class InformationLabel(QWidget):
 
     def getIconPixmap(self, message_type):
         if message_type == self.SUCCESS:
-            return QPixmap("success_icon.png")
+            return QPixmap("res/success_icon.png")
         elif message_type == self.ERROR:
-            return QPixmap("error_icon.png")
+            return QPixmap("res/error_icon.png")
         elif message_type == self.WARNING:
-            return QPixmap("warning_icon.png")
+            return QPixmap("res/warning_icon.png")
         elif message_type == self.DATE:
-            return QPixmap("date_icon.png")
+            return QPixmap("res/date_icon.png")
         elif message_type == self.DISABLE:
             return QPixmap()
 

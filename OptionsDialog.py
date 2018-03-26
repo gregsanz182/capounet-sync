@@ -23,7 +23,7 @@ class OptionsDialog(QDialog):
         self.prestamosPath = QLineEdit()
         self.sociosButton = QPushButton()
         self.prestamosButton = QPushButton()
-        self.sociosButton.setIcon(QIcon("search_icon.png"))
+        self.sociosButton.setIcon(QIcon("res/search_icon.png"))
         self.sociosButton.setStyleSheet("height: 18px; background-color: #232629;")
         self.prestamosButton.setIcon(QIcon("search_icon.png"))
         self.prestamosButton.setStyleSheet("height: 18px; background-color: #232629;")
