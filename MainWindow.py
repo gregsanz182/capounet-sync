@@ -55,13 +55,13 @@ class MainWindow(QMainWindow):
         self.config_button.clicked.connect(self.open_options)
 
     def open_options(self):
-        OptionsDialog.openDialog(self)
+        OptionsDialog.open_dialog(self)
 
     def print_log(self, string: str):
         flag = False
         if self.text_log.verticalScrollBar().value() == self.text_log.verticalScrollBar().maximum():
             flag = True
-        self.text_log.insertHtml("<br><strong>&gt{}</strong>&nbsp&nbsp{}<br>".format(
+        self.text_log.insertHtml("<br><strong>>{}</strong>  {}<br>".format(
             datetime.now().strftime("%d/%m/%Y %H:%M"),
             string
         ))

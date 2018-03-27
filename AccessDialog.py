@@ -74,9 +74,9 @@ class AccessDialog(QDialog):
                 self.password_input.text(),
                 self.domain_input.text()
             )
-            Settings.accessToken = data["access_token"]
-            Settings.refreshToken = data["refresh_token"]
-            Settings.accessTokenExpire = data["expires_in"]
+            Settings.access_token = data["access_token"]
+            Settings.refresh_token = data["refresh_token"]
+            Settings.access_token_expire = data["expires_in"]
             Settings.save_settings()
             self.accept()
         except RequestsHandlerException as exception:
