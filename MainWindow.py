@@ -61,7 +61,7 @@ class MainWindow(QMainWindow):
         flag = False
         if self.text_log.verticalScrollBar().value() == self.text_log.verticalScrollBar().maximum():
             flag = True
-        self.text_log.insertHtml("<br><strong>>{}</strong>  {}<br>".format(
+        self.text_log.insertHtml("<br><strong>>{}</strong>&nbsp;&nbsp;{}<br>".format(
             datetime.now().strftime("%d/%m/%Y %H:%M"),
             string
         ))
@@ -69,4 +69,4 @@ class MainWindow(QMainWindow):
             self.text_log.verticalScrollBar().setValue(self.text_log.verticalScrollBar().maximum())
 
     def set_sync_state(self, string: str, message_type: int, status_panel: StatusPanel):
-        status_panel.changeMessage(string, message_type)
+        status_panel.change_message(string, message_type)

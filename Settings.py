@@ -12,12 +12,14 @@ class Settings():
     socios_file = {
         "enabled": True,
         "file_path": "",
-        "name": "Socios y Ahorros"
+        "name": "Socios y Ahorros",
+        "hash": ""
     }
     prestamos_file = {
         "enabled": True,
         "file_path": "",
-        "name": "Socios y Ahorros"
+        "name": "Socios y Ahorros",
+        "hash": ""
     }
     client_id = None
     client_secret = None
@@ -94,14 +96,16 @@ class Settings():
             cls.socios_file = {
                 "enabled": True,
                 "file_path": "",
-                "name": "Socios y Ahorros"
+                "name": "Socios y Ahorros",
+                "hash": ""
             }
         cls.prestamos_file = cls.qsettings.value("paths/prestamos_file_path")
         if cls.prestamos_file is None:
             cls.prestamos_file = prestamos_file = {
                 "enabled": True,
                 "file_path": "",
-                "name": "Socios y Ahorros"
+                "name": "Socios y Ahorros",
+                "hash": ""
             }
         cls.refresh_rate = cls.qsettings.value("others/refresh_rate")
         if cls.refresh_rate is None:
@@ -125,3 +129,8 @@ class Settings():
     @classmethod
     def get_token_url(cls):
         return cls.domain + cls.token_path
+
+    @classmethod
+    def save_files_hash(cls):
+        cls.qsettings.setValue("paths/socios_file_path", cls.socios_file)
+        cls.qsettings.setValue("paths/prestamos_file_path", cls.prestamos_file)

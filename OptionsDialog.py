@@ -74,14 +74,16 @@ class OptionsDialog(QDialog):
         self.accept_button.clicked.connect(self.save_state)
 
     def select_socios_path(self):
-        self.socios_path.setText(QFileDialog.getOpenFileName(
-            self, "Selecciona archivo", filter="*.csv *.json")[0])
+        file_path = QFileDialog.getOpenFileName(
+            self, "Selecciona archivo", filter="*.csv")[0]
+        if file_path:
+            self.socios_path.setText(file_path)
 
     def select_prestamos_path(self):
-        self.prestamos_path.setText(QFileDialog.getOpenFileName(
-            self,
-            "Selecciona archivo",
-            filter="*.csv *.json")[0])
+        file_path = QFileDialog.getOpenFileName(
+            self, "Selecciona archivo", filter="*.csv")[0]
+        if file_path:
+            self.prestamos_path.setText(file_path)
 
     def save_state(self):
         Settings.socios_file.update({
