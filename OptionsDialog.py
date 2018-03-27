@@ -1,7 +1,7 @@
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QCheckBox, QLabel, QLineEdit, QToolButton, QPushButton
+from PyQt5.QtWidgets import QDialog, QVBoxLayout, QCheckBox, QLabel, QLineEdit, QPushButton
 from PyQt5.QtWidgets import QComboBox, QStyledItemDelegate, QFileDialog
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import QSize, Qt
+from PyQt5.QtCore import Qt
 from Settings import Settings
 from GuiTools import HLayout
 
@@ -17,67 +17,87 @@ class OptionsDialog(QDialog):
         self.setFixedHeight(330)
         self.layout = QVBoxLayout(self)
 
-        self.sociosCheckbox = QCheckBox()
-        self.prestamosCheckbox = QCheckBox()
-        self.sociosPath = QLineEdit()
-        self.prestamosPath = QLineEdit()
-        self.sociosButton = QPushButton()
-        self.prestamosButton = QPushButton()
-        self.sociosButton.setIcon(QIcon("res/search_icon.png"))
-        self.sociosButton.setStyleSheet("height: 18px; background-color: #232629;")
-        self.prestamosButton.setIcon(QIcon("search_icon.png"))
-        self.prestamosButton.setStyleSheet("height: 18px; background-color: #232629;")
-        self.refreshCombo = QComboBox()
-        self.refreshCombo.addItems(Settings.refreshOptions)
-        self.refreshCombo.setItemDelegate(QStyledItemDelegate())
-        self.cancelButton = QPushButton("Cancelar")
-        self.cancelButton.setObjectName("normal_button")
-        self.acceptButton = QPushButton("Aceptar")
-        self.acceptButton.setObjectName("accept_button")
+        self.socios_check_box = QCheckBox()
+        self.prestamos_check_box = QCheckBox()
+        self.socios_path = QLineEdit()
+        self.prestamos_path = QLineEdit()
+        self.socios_button = QPushButton()
+        self.prestamos_button = QPushButton()
+        self.socios_button.setIcon(QIcon("res/search_icon.png"))
+        self.socios_button.setStyleSheet("height: 18px; background-color: #232629;")
+        self.prestamos_button.setIcon(QIcon("search_icon.png"))
+        self.prestamos_button.setStyleSheet("height: 18px; background-color: #232629;")
+        self.refresh_combo = QComboBox()
+        self.refresh_combo.addItems(Settings.refreshOptions)
+        self.refresh_combo.setItemDelegate(QStyledItemDelegate())
+        self.cancel_button = QPushButton("Cancelar")
+        self.cancel_button.setObjectName("normal_button")
+        self.accept_button = QPushButton("Aceptar")
+        self.accept_button.setObjectName("accept_button")
 
-        self.loadOptions()
+        self.load_options()
 
-        self.layout.addLayout(HLayout(self.sociosCheckbox, QLabel("Archivo de Socios y Ahorros"), True))
-        self.layout.addLayout(HLayout(self.sociosPath, self.sociosButton))
+        self.layout.addLayout(HLayout(
+            self.socios_check_box,
+            QLabel("Archivo de Socios y Ahorros"),
+            True))
+        self.layout.addLayout(HLayout(self.socios_path, self.socios_button))
         self.layout.addSpacing(2)
-        self.layout.addLayout(HLayout(self.prestamosCheckbox, QLabel("Archivo de Prestamos"), True))
-        self.layout.addLayout(HLayout(self.prestamosPath, self.prestamosButton))
+        self.layout.addLayout(HLayout(
+            self.prestamos_check_box,
+            QLabel("Archivo de Préstamos"),
+            True))
+        self.layout.addLayout(HLayout(self.prestamos_path, self.prestamos_button))
         self.layout.addSpacing(10)
-        self.layout.addLayout(HLayout(QLabel("Tasa de refesco: "), self.refreshCombo, True))
+        self.layout.addLayout(HLayout(QLabel("Tasa de refesco: "), self.refresh_combo, True))
         self.layout.addStretch()
-        self.layout.addLayout(HLayout(self.cancelButton, self.acceptButton))
+        self.layout.addLayout(HLayout(self.cancel_button, self.accept_button))
         self.setModal(True)
 
-        self.makeConnections()
+        self.make_connections()
 
-    def loadOptions(self):
-        self.sociosCheckbox.setCheckState(Qt.Checked if Settings.sociosFilePath[0] else Qt.Unchecked)
-        self.prestamosCheckbox.setCheckState(Qt.Checked if Settings.prestamosFilePath[0] else Qt.Unchecked)
-        self.prestamosPath.setText(Settings.prestamosFilePath[1])
-        self.sociosPath.setText(Settings.sociosFilePath[1])
-        self.refreshCombo.setCurrentIndex(Settings.refreshRate)
+    def load_options(self):
+        self.socios_check_box.setCheckState(
+            Qt.Checked if Settings.sociosFilePath[0] else Qt.Unchecked
+        )
+        self.prestamos_check_box.setCheckState(
+            Qt.Checked if Settings.prestamosFilePath[0] else Qt.Unchecked
+        )
+        self.prestamos_path.setText(Settings.prestamosFilePath[1])
+        self.socios_path.setText(Settings.sociosFilePath[1])
+        self.refresh_combo.setCurrentIndex(Settings.refreshRate)
 
-    def makeConnections(self):
-        self.sociosButton.clicked.connect(self.selectSociosPath)
-        self.prestamosButton.clicked.connect(self.selectPrestamosPath)
-        self.cancelButton.clicked.connect(self.reject)
-        self.acceptButton.clicked.connect(self.saveState)
+    def make_connections(self):
+        self.socios_button.clicked.connect(self.selectsocios_path)
+        self.prestamos_button.clicked.connect(self.select_prestamos_path)
+        self.cancel_button.clicked.connect(self.reject)
+        self.accept_button.clicked.connect(self.save_state)
 
-    def selectSociosPath(self, input):
-        self.sociosPath.setText(QFileDialog.getOpenFileName(self, "Selecciona archivo", filter="*.csv *.json")[0])
-    
-    def selectPrestamosPath(self, input):
-        self.prestamosPath.setText(QFileDialog.getOpenFileName(self, "Selecciona archivo", filter="*.csv *.json")[0])
+    def select_socios_path(self):
+        self.socios_path.setText(QFileDialog.getOpenFileName(
+            self, "Selecciona archivo", filter="*.csv *.json")[0])
 
-    def saveState(self):
-        Settings.sociosFilePath = (True if self.sociosCheckbox.checkState() == Qt.Checked else False, self.sociosPath.text())
-        Settings.prestamosFilePath = (True if self.prestamosCheckbox.checkState() == Qt.Checked else False, self.prestamosPath.text())
-        Settings.refreshRate = self.refreshCombo.currentIndex()
+    def select_prestamos_path(self):
+        self.prestamos_path.setText(QFileDialog.getOpenFileName(
+            self,
+            "Selecciona archivo",
+            filter="*.csv *.json")[0])
+
+    def save_state(self):
+        Settings.sociosFilePath = (
+            True if self.socios_check_box.checkState() == Qt.Checked else False,
+            self.socios_path.text()
+        )
+        Settings.prestamosFilePath = (
+            True if self.prestamos_check_box.checkState() == Qt.Checked else False,
+            self.prestamos_path.text()
+        )
+        Settings.refreshRate = self.refresh_combo.currentIndex()
         Settings.saveSettings()
         self.accept()
 
     @staticmethod
-    def openDialog(parent = None):
-        d = OptionsDialog(parent)
-        d.show()
-        return d.exec_()
+    def open_dialog(parent=None):
+        dialog = OptionsDialog(parent)
+        dialog.show()
+        return dialog.exec_()

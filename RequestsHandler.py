@@ -31,8 +31,6 @@ class RequestsHandler():
             raise MissingSchema(e)
         except requests.exceptions.ConnectionError as e:
             raise GeneralConnectionError(e)
-        except requests.exceptions.ConnectTimeout as e:
-            raise GeneralConnectionError(e)
 
 class RequestsHandlerException(Exception):
 

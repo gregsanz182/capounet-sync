@@ -1,5 +1,3 @@
-import sys
-import requests
 import qdarkstyle
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QCoreApplication

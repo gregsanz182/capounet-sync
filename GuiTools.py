@@ -4,7 +4,7 @@ from PyQt5.QtGui import QPixmap, QIcon
 
 class HLayout(QHBoxLayout):
 
-    def __init__(self, left_widget, right_widget, stretch=False, parent = None):
+    def __init__(self, left_widget: QWidget, right_widget: QWidget, stretch=False, parent=None):
         super().__init__(parent)
         self.addWidget(left_widget)
         self.addWidget(right_widget)
@@ -14,13 +14,13 @@ class HLayout(QHBoxLayout):
 
 class AlignedLabel(QLabel):
 
-    def __init__(self, alignment: Qt.AlignmentFlag, string: str = "", parent = None):
+    def __init__(self, alignment: Qt.AlignmentFlag, string: str = "", parent=None):
         super().__init__(string, parent)
         self.setAlignment(alignment)
 
 class StatusPanel(QFrame):
 
-    def __init__(self, title, iconPath, parent = None):
+    def __init__(self, title: str, iconPath: str, parent=None):
         super().__init__(parent)
         self.setStyleSheet("""
             QFrame{
@@ -35,30 +35,32 @@ class StatusPanel(QFrame):
         self.setFixedHeight(275)
 
         self.layout = QVBoxLayout(self)
-        self.iconLabel = AlignedLabel(Qt.AlignCenter)
-        self.iconLabel.setPixmap(QPixmap(iconPath))
-        self.iconLabel.setFixedHeight(60)
-        self.titleLabel = AlignedLabel(Qt.AlignCenter, title)
-        self.titleLabel.setStyleSheet("font-size: 13px; font-weight: bold;")
-        self.lastSyncLabel = InformationLabel("Última sincronización exitosa:\n02:35pm 12-06-2018", InformationLabel.DATE)
+        self.icon_label = AlignedLabel(Qt.AlignCenter)
+        self.icon_label.setPixmap(QPixmap(iconPath))
+        self.icon_label.setFixedHeight(60)
+        self.title_label = AlignedLabel(Qt.AlignCenter, title)
+        self.title_label.setStyleSheet("font-size: 13px; font-weight: bold;")
+        self.last_sync_label = InformationLabel(
+            "Última sincronización exitosa:\n02:35pm 12-06-2018",
+            InformationLabel.DATE)
         self.message = InformationLabel("", InformationLabel.DISABLE)
 
         self.layout.addSpacing(5)
-        self.layout.addWidget(self.titleLabel)
+        self.layout.addWidget(self.title_label)
         self.layout.addSpacing(5)
-        self.layout.addWidget(self.iconLabel)
+        self.layout.addWidget(self.icon_label)
         self.layout.addSpacing(15)
-        self.layout.addWidget(self.lastSyncLabel)
+        self.layout.addWidget(self.last_sync_label)
         self.layout.addWidget(self.message)
         self.layout.addStretch()
 
-        self.message.setMessage("Todo funciona correctamente", InformationLabel.SUCCESS)
+        self.message.set_message("Todo funciona correctamente", InformationLabel.SUCCESS)
 
-    def changeMessage(self, string: str, message_type):
+    def change_message(self, string: str, message_type):
         if message_type == InformationLabel.DATE:
-            self.lastSyncLabel.setMessage(string, InformationLabel.DATE)
+            self.last_sync_label.set_message(string, InformationLabel.DATE)
         else:
-            self.message.setMessage(string, message_type)
+            self.message.set_message(string, message_type)
 
 class InformationLabel(QWidget):
 
@@ -68,29 +70,29 @@ class InformationLabel(QWidget):
     DATE = 3
     DISABLE = 4
 
-    def __init__(self, string: str, message_type = SUCCESS, parent = None):
+    def __init__(self, string: str, message_type=SUCCESS, parent=None):
         super().__init__(parent)
         self.layout = QHBoxLayout(self)
         self.layout.setContentsMargins(0, 0, 0, 0)
 
-        self.iconLabel = QLabel()
-        self.iconLabel.setFixedSize(QSize(13, 13))
-        self.iconLabel.setPixmap(self.getIconPixmap(message_type))
+        self.icon_label = QLabel()
+        self.icon_label.setFixedSize(QSize(13, 13))
+        self.icon_label.setPixmap(self.get_icon_pixmap(message_type))
 
-        self.msgLabel = QLabel(string)
-        self.msgLabel.setWordWrap(True)
+        self.msg_label = QLabel(string)
+        self.msg_label.setWordWrap(True)
 
-        self.layout.addWidget(self.iconLabel)
-        self.layout.setAlignment(self.iconLabel, Qt.AlignTop)
+        self.layout.addWidget(self.icon_label)
+        self.layout.setAlignment(self.icon_label, Qt.AlignTop)
         self.layout.addSpacing(7)
-        self.layout.addWidget(self.msgLabel)
+        self.layout.addWidget(self.msg_label)
         self.layout.addStretch()
 
-    def setMessage(self, string: str="", message_type = SUCCESS):
-        self.iconLabel.setPixmap(self.getIconPixmap(message_type))
-        self.msgLabel.setText(string)
+    def set_message(self, string: str = "", message_type=SUCCESS):
+        self.icon_label.setPixmap(self.get_icon_pixmap(message_type))
+        self.msg_label.setText(string)
 
-    def getIconPixmap(self, message_type):
+    def get_icon_pixmap(self, message_type):
         if message_type == self.SUCCESS:
             return QPixmap("res/success_icon.png")
         elif message_type == self.ERROR:

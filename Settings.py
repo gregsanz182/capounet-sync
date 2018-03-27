@@ -9,8 +9,16 @@ class Settings():
     accessToken = None
     refreshToken = None
     QSettings = None
-    sociosFilePath = (True, "")
-    prestamosFilePath = (True, "")
+    sociosFile = {
+        "enabled": True,
+        "file_path": "",
+        "name": "Socios y Ahorros"
+    }
+    prestamosFile = {
+        "enabled": True,
+        "file_path": "",
+        "name": "Socios y Ahorros"
+    }
     clientID = None
     clientSecret = None
     domain = None
