@@ -9,7 +9,7 @@ class OptionsDialog(QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setStyleSheet(Settings.globalStyle)
+        self.setStyleSheet(Settings.global_style)
         self.init_components()
 
     def init_components(self):
@@ -25,10 +25,10 @@ class OptionsDialog(QDialog):
         self.prestamos_button = QPushButton()
         self.socios_button.setIcon(QIcon("res/search_icon.png"))
         self.socios_button.setStyleSheet("height: 18px; background-color: #232629;")
-        self.prestamos_button.setIcon(QIcon("search_icon.png"))
+        self.prestamos_button.setIcon(QIcon("res/search_icon.png"))
         self.prestamos_button.setStyleSheet("height: 18px; background-color: #232629;")
         self.refresh_combo = QComboBox()
-        self.refresh_combo.addItems(Settings.refreshOptions)
+        self.refresh_combo.addItems(Settings.refresh_options)
         self.refresh_combo.setItemDelegate(QStyledItemDelegate())
         self.cancel_button = QPushButton("Cancelar")
         self.cancel_button.setObjectName("normal_button")
@@ -58,17 +58,17 @@ class OptionsDialog(QDialog):
 
     def load_options(self):
         self.socios_check_box.setCheckState(
-            Qt.Checked if Settings.sociosFilePath[0] else Qt.Unchecked
+            Qt.Checked if Settings.socios_file["enabled"] else Qt.Unchecked
         )
         self.prestamos_check_box.setCheckState(
-            Qt.Checked if Settings.prestamosFilePath[0] else Qt.Unchecked
+            Qt.Checked if Settings.prestamos_file["enabled"] else Qt.Unchecked
         )
-        self.prestamos_path.setText(Settings.prestamosFilePath[1])
-        self.socios_path.setText(Settings.sociosFilePath[1])
-        self.refresh_combo.setCurrentIndex(Settings.refreshRate)
+        self.prestamos_path.setText(Settings.prestamos_file["file_path"])
+        self.socios_path.setText(Settings.socios_file["file_path"])
+        self.refresh_combo.setCurrentIndex(Settings.refresh_rate)
 
     def make_connections(self):
-        self.socios_button.clicked.connect(self.selectsocios_path)
+        self.socios_button.clicked.connect(self.select_socios_path)
         self.prestamos_button.clicked.connect(self.select_prestamos_path)
         self.cancel_button.clicked.connect(self.reject)
         self.accept_button.clicked.connect(self.save_state)
@@ -84,16 +84,16 @@ class OptionsDialog(QDialog):
             filter="*.csv *.json")[0])
 
     def save_state(self):
-        Settings.sociosFilePath = (
-            True if self.socios_check_box.checkState() == Qt.Checked else False,
-            self.socios_path.text()
-        )
-        Settings.prestamosFilePath = (
-            True if self.prestamos_check_box.checkState() == Qt.Checked else False,
-            self.prestamos_path.text()
-        )
-        Settings.refreshRate = self.refresh_combo.currentIndex()
-        Settings.saveSettings()
+        Settings.socios_file.update({
+            "enabled": True if self.socios_check_box.checkState() == Qt.Checked else False,
+            "file_path": self.socios_path.text()
+        })
+        Settings.prestamos_file.update({
+            "enabled": True if self.prestamos_check_box.checkState() == Qt.Checked else False,
+            "file_path": self.prestamos_path.text()
+        })
+        Settings.refresh_rate = self.refresh_combo.currentIndex()
+        Settings.save_settings()
         self.accept()
 
     @staticmethod

@@ -8,37 +8,39 @@ from AccessDialog import AccessDialog
 from OptionsDialog import OptionsDialog
 from SyncThread import SyncThread
 
+def main():
+    try:
+        main_app = QApplication(sys.argv)
+        main_app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+        QCoreApplication.setApplicationName("CAPOUNET Sync")
+        QCoreApplication.setOrganizationName("CAPOOUNET")
+        QCoreApplication.setOrganizationDomain("capounet.unet.edu.ve")
+        Settings.load_settings(2, "8jwf7A0DbakpJ7p4HKCPJXJogwGFyWPkDLsDYngx")
+        return_code = 1
+
+        if not Settings.is_init():
+            return_code = AccessDialog.obtain_configuration()
+            if return_code == 1:
+                return_code = OptionsDialog.open_dialog()
+
+        if return_code == 1:
+            main_window = MainWindow()
+            main_window.show()
+            sync_thread = SyncThread(main_window)
+            sync_thread.start()
+            main_app.exec_()
+
+        sys.exit(0)
+
+    except NameError:
+        print("Nombre del error:", sys.exc_info()[1])
+    except SystemExit:
+        print("Cerrando la ventana...")
+
 if __name__ == "__main__":
     main()
 
-    def main():
-        try:
-            main_app = QApplication(sys.argv)
-            main_app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
-            QCoreApplication.setApplicationName("CAPOUNET Sync")
-            QCoreApplication.setOrganizationName("CAPOOUNET")
-            QCoreApplication.setOrganizationDomain("capounet.unet.edu.ve")
-            Settings.load_settings(2, "8jwf7A0DbakpJ7p4HKCPJXJogwGFyWPkDLsDYngx")
-            return_code = 1
-
-            if not Settings.is_init():
-                return_code = AccessDialog.obtainConfiguration()
-                if return_code == 1:
-                    return_code = OptionsDialog.openDialog()
-
-            if return_code == 1:
-                main_window = MainWindow()
-                main_window.show()
-                sync_thread = SyncThread(main_window)
-                sync_thread.start()
-                main_app.exec_()
-
-            sys.exit(0)
-
-        except NameError:
-            print("Nombre del error:", sys.exc_info()[1])
-        except SystemExit:
-            print("Cerrando la ventana...")
+    
 
     """with open('AHORROSWEB.CSV', newline='') as csvfile:
         reader = list(csv.DictReader(csvfile))

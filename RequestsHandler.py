@@ -8,14 +8,14 @@ class RequestsHandler():
         Settings.domain = domain
         data = {
             "grant_type": "password",
-            "client_id": Settings.clientID,
-            "client_secret": Settings.clientSecret,
+            "client_id": Settings.client_id,
+            "client_secret": Settings.client_secret,
             "username": username,
             "password": password,
             "scope": "*"
         }
         try:
-            request = requests.post(Settings.getTokenUrl(), data=data)
+            request = requests.post(Settings.get_token_url(), data=data)
             if request.status_code == 200:
                 return request.json()
             if request.status_code == 404:

@@ -2,35 +2,35 @@ from PyQt5.QtCore import QSettings
 from cryptography.fernet import Fernet
 
 class Settings():
-    tokenPath = "/oauth/token"
-    apiPath = "/api"
-    sociosUpdatePath = "/socios/update"
+    token_path = "/oauth/token"
+    api_path = "/api"
+    socios_update_path = "/socios/update"
     secret = b'AvA6jPWRxrZAdQV0RSHAWtZOLrofSOG693XbjSwD6MA='
-    accessToken = None
-    refreshToken = None
-    QSettings = None
-    sociosFile = {
+    access_token = None
+    refresh_token = None
+    qsettings = None
+    socios_file = {
         "enabled": True,
         "file_path": "",
         "name": "Socios y Ahorros"
     }
-    prestamosFile = {
+    prestamos_file = {
         "enabled": True,
         "file_path": "",
         "name": "Socios y Ahorros"
     }
-    clientID = None
-    clientSecret = None
+    client_id = None
+    client_secret = None
     domain = None
-    accessTokenExpire = None
-    refreshOptions = [
+    access_token_expire = None
+    refresh_options = [
         "1 Hora",
         "3 Horas",
         "6 Horas",
         "12 Horas"
     ]
-    refreshRate = 0
-    globalStyle = """
+    refresh_rate = 0
+    global_style = """
         QLabel{
             color: #BDBDBD;
         }
@@ -55,65 +55,73 @@ class Settings():
     @classmethod
     def save_settings(cls):
         fernet = Fernet(cls.secret)
-        if cls.accessToken:
+        if cls.access_token:
             cls.qsettings.setValue(
                 "tokens/access_token",
                 fernet.encrypt(str.encode("{} {} {}".format(
-                    cls.accessToken,
-                    cls.clientSecret,
-                    cls.clientID))))
-        if cls.refreshToken:
+                    cls.access_token,
+                    cls.client_secret,
+                    cls.client_id))))
+        if cls.refresh_token:
             cls.qsettings.setValue(
                 "tokens/refresh_token",
                 fernet.encrypt(str.encode("{} {} {}".format(
-                    cls.refreshToken,
-                    cls.clientSecret,
-                    cls.clientID))))
-        if cls.accessTokenExpire:
-            cls.qsettings.setValue("tokens/access_token_expire", cls.accessTokenExpire)
-        cls.qsettings.setValue("paths/socios_file_path", cls.sociosFilePath)
-        cls.qsettings.setValue("paths/prestamos_file_path", cls.prestamosFilePath)
-        cls.qsettings.setValue("others/refresh_rate", cls.refreshRate)
+                    cls.refresh_token,
+                    cls.client_secret,
+                    cls.client_id))))
+        if cls.access_token_expire:
+            cls.qsettings.setValue("tokens/access_token_expire", cls.access_token_expire)
+        cls.qsettings.setValue("paths/socios_file_path", cls.socios_file)
+        cls.qsettings.setValue("paths/prestamos_file_path", cls.prestamos_file)
+        cls.qsettings.setValue("others/refresh_rate", cls.refresh_rate)
         cls.qsettings.sync()
 
     @classmethod
     def load_settings(cls, client_id, client_secret):
-        cls.clientID = client_id
-        cls.clientSecret = client_secret
+        cls.client_id = client_id
+        cls.client_secret = client_secret
         cls.qsettings = QSettings("settings.ini", QSettings.IniFormat)
         fernet = Fernet(cls.secret)
         if cls.qsettings.value("tokens/access_token"):
-            cls.accessToken = cls.get_setting(
+            cls.access_token = cls.get_setting(
                 bytes.decode(fernet.decrypt(cls.qsettings.value("tokens/access_token"))))
         if cls.qsettings.value("tokens/refresh_token"):
-            cls.refreshToken = cls.get_setting(
+            cls.refresh_token = cls.get_setting(
                 bytes.decode(fernet.decrypt(cls.qsettings.value("tokens/refresh_token"))))
-        cls.accessTokenExpire = cls.qsettings.value("tokens/access_token_expire")
-        cls.sociosFilePath = cls.qsettings.value("paths/socios_file_path")
-        if cls.sociosFilePath is None:
-            cls.sociosFilePath = (True, "")
-        cls.prestamosFilePath = cls.qsettings.value("paths/prestamos_file_path")
-        if cls.prestamosFilePath is None:
-            cls.prestamosFilePath = (True, "")
-        cls.refreshRate = cls.qsettings.value("others/refresh_rate")
-        if cls.refreshRate is None:
-            cls.refreshRate = 0
+        cls.access_token_expire = cls.qsettings.value("tokens/access_token_expire")
+        cls.socios_file = cls.qsettings.value("paths/socios_file_path")
+        if cls.socios_file is None:
+            cls.socios_file = {
+                "enabled": True,
+                "file_path": "",
+                "name": "Socios y Ahorros"
+            }
+        cls.prestamos_file = cls.qsettings.value("paths/prestamos_file_path")
+        if cls.prestamos_file is None:
+            cls.prestamos_file = prestamos_file = {
+                "enabled": True,
+                "file_path": "",
+                "name": "Socios y Ahorros"
+            }
+        cls.refresh_rate = cls.qsettings.value("others/refresh_rate")
+        if cls.refresh_rate is None:
+            cls.refresh_rate = 0
         else:
-            cls.refreshRate = int(cls.refreshRate)
+            cls.refresh_rate = int(cls.refresh_rate)
 
     @classmethod
     def get_setting(cls, setting):
         parts = setting.split(" ")
-        if len(parts) == 3 and parts[1] == cls.clientSecret and int(parts[2]) == cls.clientID:
+        if len(parts) == 3 and parts[1] == cls.client_secret and int(parts[2]) == cls.client_id:
             return parts[0]
         return None
 
     @classmethod
     def is_init(cls):
-        if cls.accessToken and cls.refreshToken:
+        if cls.access_token and cls.refresh_token:
             return True
         return False
 
     @classmethod
     def get_token_url(cls):
-        return cls.domain + cls.tokenPath
+        return cls.domain + cls.token_path

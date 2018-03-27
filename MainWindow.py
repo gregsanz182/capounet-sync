@@ -20,7 +20,7 @@ class MainWindow(QMainWindow):
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
         self.central_widget_layout = QVBoxLayout(self.central_widget)
-        self.central_widget.setStyleSheet(Settings.globalStyle)
+        self.central_widget.setStyleSheet(Settings.global_style)
 
         self.top_layout = QHBoxLayout()
         self.central_widget_layout.addLayout(self.top_layout)

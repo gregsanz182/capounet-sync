@@ -19,7 +19,7 @@ class AccessDialog(QDialog):
         self.layout.setAlignment(Qt.AlignTop)
         self.setFixedWidth(320)
         self.setFixedHeight(440)
-        self.setStyleSheet(Settings.globalStyle)
+        self.setStyleSheet(Settings.global_style)
         self.label_logo = QLabel()
         self.label_logo.setPixmap(QPixmap("res/logo.png"))
         self.label_logo.setAlignment(Qt.AlignCenter)
