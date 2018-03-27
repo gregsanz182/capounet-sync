@@ -10,8 +10,6 @@ from GuiTools import AlignedLabel, InformationLabel, ToolButton, StatusPanel
 
 class MainWindow(QMainWindow):
 
-    printLogSignal = pyqtSignal(str)
-
     def __init__(self):
         super().__init__()
         self.setWindowTitle("CAPOUNET Sync")
@@ -57,7 +55,6 @@ class MainWindow(QMainWindow):
 
     def makeConnections(self):
         self.configButton.clicked.connect(self.openOptions)
-        self.printLogSignal.connect(self.printLog)
 
     def openOptions(self):
         OptionsDialog.openDialog(self)
@@ -66,7 +63,10 @@ class MainWindow(QMainWindow):
         flag = False
         if self.textLog.verticalScrollBar().value() == self.textLog.verticalScrollBar().maximum():
             flag = True
-        self.textLog.insertPlainText("\n>> {}   {}\n".format(datetime.now().strftime("%d/%m/%Y %H:%M"), string))
+        self.textLog.insertPlainText("\n> {}   {}\n".format(datetime.now().strftime("%d/%m/%Y %H:%M"), string))
         if flag:
             self.textLog.verticalScrollBar().setValue(self.textLog.verticalScrollBar().maximum())
+
+    def setSyncState(self, string: str, message_type: int, status_panel: StatusPanel):
+        status_panel.changeMessage(string, message_type)
 

@@ -18,6 +18,48 @@ class AlignedLabel(QLabel):
         super().__init__(string, parent)
         self.setAlignment(alignment)
 
+class StatusPanel(QFrame):
+
+    def __init__(self, title, iconPath, parent = None):
+        super().__init__(parent)
+        self.setStyleSheet("""
+            QFrame{
+                background-color: #232629;
+            }
+            QFrame#status_panel{
+                border: 1px solid #75787B;
+                border-radius: 5px;
+            }
+        """)
+        self.setObjectName("status_panel")
+        self.setFixedHeight(275)
+
+        self.layout = QVBoxLayout(self)
+        self.iconLabel = AlignedLabel(Qt.AlignCenter)
+        self.iconLabel.setPixmap(QPixmap(iconPath))
+        self.iconLabel.setFixedHeight(60)
+        self.titleLabel = AlignedLabel(Qt.AlignCenter, title)
+        self.titleLabel.setStyleSheet("font-size: 13px; font-weight: bold;")
+        self.lastSyncLabel = InformationLabel("Última sincronización exitosa:\n02:35pm 12-06-2018", InformationLabel.DATE)
+        self.message = InformationLabel("", InformationLabel.DISABLE)
+
+        self.layout.addSpacing(5)
+        self.layout.addWidget(self.titleLabel)
+        self.layout.addSpacing(5)
+        self.layout.addWidget(self.iconLabel)
+        self.layout.addSpacing(15)
+        self.layout.addWidget(self.lastSyncLabel)
+        self.layout.addWidget(self.message)
+        self.layout.addStretch()
+
+        self.message.setMessage("Todo funciona correctamente", InformationLabel.SUCCESS)
+
+    def changeMessage(self, string: str, message_type):
+        if message_type == InformationLabel.DATE:
+            self.lastSyncLabel.setMessage(string, InformationLabel.DATE)
+        else:
+            self.message.setMessage(string, message_type)
+
 class InformationLabel(QWidget):
 
     SUCCESS = 0
@@ -67,39 +109,3 @@ class ToolButton(QToolButton):
         self.setText(text)
         self.setIcon(icon)
         self.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-
-class StatusPanel(QFrame):
-
-    def __init__(self, title, iconPath, parent = None):
-        super().__init__(parent)
-        self.setStyleSheet("""
-            QFrame{
-                background-color: #232629;
-            }
-            QFrame#status_panel{
-                border: 1px solid #75787B;
-                border-radius: 5px;
-            }
-        """)
-        self.setObjectName("status_panel")
-        self.setFixedHeight(275)
-
-        self.layout = QVBoxLayout(self)
-        self.iconLabel = AlignedLabel(Qt.AlignCenter)
-        self.iconLabel.setPixmap(QPixmap(iconPath))
-        self.iconLabel.setFixedHeight(60)
-        self.titleLabel = AlignedLabel(Qt.AlignCenter, title)
-        self.titleLabel.setStyleSheet("font-size: 13px; font-weight: bold;")
-        self.lastSyncLabel = InformationLabel("Última sincronización exitosa:\n02:35pm 12-06-2018", InformationLabel.DATE)
-        self.message = InformationLabel("", InformationLabel.DISABLE)
-
-        self.layout.addSpacing(5)
-        self.layout.addWidget(self.titleLabel)
-        self.layout.addSpacing(5)
-        self.layout.addWidget(self.iconLabel)
-        self.layout.addSpacing(15)
-        self.layout.addWidget(self.lastSyncLabel)
-        self.layout.addWidget(self.message)
-        self.layout.addStretch()
-
-        self.message.setMessage("Todo funciona correctamente", InformationLabel.SUCCESS)
