@@ -11,7 +11,8 @@ class SyncThread(QObject, Thread):
     changedSyncStateSignal = pyqtSignal(str, int, StatusPanel)
 
     syncMessages = {
-        "disable_sync": "La sincronización se encuentra deshabilitada.<br>Habilitar en <strong>Ajustes</strong>."
+        "disable_sync": "La sincronización se encuentra deshabilitada. \
+                        <br>Habilitar en <strong>Ajustes</strong>."
     }
 
     def __init__(self, mainWindow: MainWindow):

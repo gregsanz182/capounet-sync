@@ -69,7 +69,7 @@ class AccessDialog(QDialog):
             return
         self.print_message("Autenticando...")
         try:
-            data = RequestsHandler.getAccessToken(
+            data = RequestsHandler.get_access_token(
                 self.username_input.text(),
                 self.password_input.text(),
                 self.domain_input.text()
@@ -77,7 +77,7 @@ class AccessDialog(QDialog):
             Settings.accessToken = data["access_token"]
             Settings.refreshToken = data["refresh_token"]
             Settings.accessTokenExpire = data["expires_in"]
-            Settings.saveSettings()
+            Settings.save_settings()
             self.accept()
         except RequestsHandlerException as exception:
             self.print_message(exception.message, self.ERROR_MESSAGE)
