@@ -1,6 +1,4 @@
 import sys
-import csv
-import json
 import requests
 import qdarkstyle
 from PyQt5.QtWidgets import QApplication
@@ -9,6 +7,7 @@ from Settings import Settings
 from MainWindow import MainWindow
 from AccessDialog import AccessDialog
 from OptionsDialog import OptionsDialog
+from SyncThread import SyncThread
 
 if __name__ == "__main__":
     try:
@@ -28,6 +27,8 @@ if __name__ == "__main__":
         if return_code == 1:
             mainWindow = MainWindow()
             mainWindow.show()
+            syncThread = SyncThread(mainWindow)
+            syncThread.start()
             mainApp.exec_()
 
         sys.exit(0)
