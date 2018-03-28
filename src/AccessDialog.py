@@ -1,4 +1,4 @@
-"""Este módulo contiene la clase AccessDialog, encargada de presentar un QDialog que permita 
+"""Este módulo contiene la clase AccessDialog, encargada de presentar un QDialog que permita
 obtener los tokens necesarios para el uso de la API por medio de las credenciales de usuario."""
 
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QWidget
@@ -18,8 +18,6 @@ class AccessDialog(QDialog):
     def __init__(self, parent: QWidget = None):
         """Inicializa el objeto.
         Settings.load_settings() debe haber sido llamado previamente.
-        
-        :param string: str: 
         """
         super().__init__(parent)
         self.__init_components()

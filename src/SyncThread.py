@@ -6,8 +6,8 @@ from threading import Thread
 from os import path
 from MainWindow import MainWindow
 from PyQt5.QtCore import pyqtSignal, QObject
-from GuiTools import InformationLabel, StatusPanel
 from PyQt5.QtWidgets import QWidget
+from GuiTools import InformationLabel, StatusPanel
 from Settings import Settings
 
 class SyncThread(QObject, Thread):
