@@ -6,10 +6,10 @@ from PyQt5.QtCore import QSettings
 from cryptography.fernet import Fernet
 
 class Settings():
-    token_path = "/oauth/token"
-    api_path = "/api"
-    socios_update_path = "/socios/update"
-    secret = b'AvA6jPWRxrZAdQV0RSHAWtZOLrofSOG693XbjSwD6MA='
+    __token_path = "/oauth/token"
+    __api_path = "/api"
+    __socios_update_path = "/socios/update"
+    __secret = b'AvA6jPWRxrZAdQV0RSHAWtZOLrofSOG693XbjSwD6MA='
     access_token = None
     refresh_token = None
     qsettings = None
@@ -81,7 +81,7 @@ class Settings():
 
     @classmethod
     def save_settings(cls):
-        fernet = Fernet(cls.secret)
+        fernet = Fernet(cls.__secret)
         if cls.access_token:
             cls.qsettings.setValue(
                 "tokens/access_token",
@@ -104,17 +104,17 @@ class Settings():
         cls.qsettings.sync()
 
     @classmethod
-    def load_settings(cls, client_id, client_secret):
+    def load_settings(cls, client_id: int, client_secret: str):
         cls.client_id = client_id
         cls.client_secret = client_secret
         cls.qsettings = QSettings("settings.ini", QSettings.IniFormat)
         cls.qsettings_hash = QSettings("hashes.ini", QSettings.IniFormat)
-        fernet = Fernet(cls.secret)
+        fernet = Fernet(cls.__secret)
         if cls.qsettings.value("tokens/access_token"):
-            cls.access_token = cls.get_setting(
+            cls.access_token = cls.__get_setting(
                 bytes.decode(fernet.decrypt(cls.qsettings.value("tokens/access_token"))))
         if cls.qsettings.value("tokens/refresh_token"):
-            cls.refresh_token = cls.get_setting(
+            cls.refresh_token = cls.__get_setting(
                 bytes.decode(fernet.decrypt(cls.qsettings.value("tokens/refresh_token"))))
         cls.access_token_expire = cls.qsettings.value("tokens/access_token_expire")
         aux_file = cls.qsettings.value("paths/socios_file_path")
@@ -132,21 +132,21 @@ class Settings():
             cls.refresh_rate = int(cls.refresh_rate)
 
     @classmethod
-    def get_setting(cls, setting):
+    def __get_setting(cls, setting: str) -> str:
         parts = setting.split(" ")
         if len(parts) == 3 and parts[1] == cls.client_secret and int(parts[2]) == cls.client_id:
             return parts[0]
         return None
 
     @classmethod
-    def is_init(cls):
+    def is_init(cls) -> bool:
         if cls.access_token and cls.refresh_token:
             return True
         return False
 
     @classmethod
-    def get_token_url(cls):
-        return cls.domain + cls.token_path
+    def get_token_url(cls) -> str:
+        return cls.domain + cls.__token_path
 
     @classmethod
     def save_files_hash(cls):

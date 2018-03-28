@@ -22,9 +22,9 @@ class AccessDialog(QDialog):
         :param string: str: 
         """
         super().__init__(parent)
-        self.init_components()
+        self.__init_components()
 
-    def init_components(self):
+    def __init_components(self):
         """Inicializa todos los componentes del QDialog"""
         #Atributos del dialogo
         self.setWindowTitle("Conceder permisos")
@@ -72,7 +72,7 @@ class AccessDialog(QDialog):
         self.layout.addSpacing(10)
         self.layout.addWidget(self.boton_aceptar)
 
-        self.boton_aceptar.clicked.connect(self.send_request)
+        self.boton_aceptar.clicked.connect(self.__send_request)
 
     @staticmethod
     def obtain_configuration() -> bool:
@@ -83,7 +83,7 @@ class AccessDialog(QDialog):
         dialog.show()
         return dialog.exec_()
 
-    def send_request(self):
+    def __send_request(self):
         """Envia la petición al servidor para obtener los tokens"""
         message = ""
         #Verifica si todos los QLineEdit han sido llenados.

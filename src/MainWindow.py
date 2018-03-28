@@ -49,9 +49,9 @@ class MainWindow(QMainWindow):
         self.text_log.setReadOnly(True)
         self.central_widget_layout.addWidget(self.text_log)
 
-        self.make_connections()
+        self.__make_connections()
 
-    def make_connections(self):
+    def __make_connections(self):
         self.config_button.clicked.connect(self.open_options)
 
     def open_options(self):

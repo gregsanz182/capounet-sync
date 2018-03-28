@@ -26,9 +26,9 @@ class SyncThread(QObject, Thread):
         super(SyncThread, self).__init__()
         self.window = mainWindow
         self.flag = {}
-        self.make_connections()
+        self.__make_connections()
 
-    def make_connections(self):
+    def __make_connections(self):
         self.log_signal.connect(self.window.print_log)
         self.changed_sync_state_signal.connect(self.window.set_sync_state)
 
@@ -50,14 +50,14 @@ class SyncThread(QObject, Thread):
                 self.window.prestamos_panel
             )
         while True:
-            flag1 = self.sync_file(Settings.socios_file, self.window.socios_panel)
-            flag2 = self.sync_file(Settings.prestamos_file, self.window.prestamos_panel)
+            flag1 = self.__sync_file(Settings.socios_file, self.window.socios_panel)
+            flag2 = self.__sync_file(Settings.prestamos_file, self.window.prestamos_panel)
             if flag1 or flag2:
                 Settings.save_files_hash()
 
             time.sleep(4)
 
-    def sync_file(self, file_info: dict, panel: QWidget):
+    def __sync_file(self, file_info: dict, panel: QWidget):
         if not file_info["enabled"]:
             return False
 

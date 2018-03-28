@@ -1,10 +1,16 @@
-from PyQt5.QtWidgets import QHBoxLayout, QLabel, QWidget, QToolButton, QFrame, QVBoxLayout
+from PyQt5.QtWidgets import QHBoxLayout, QLabel, QWidget, QFrame, QVBoxLayout
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QPixmap, QIcon
 
 class HLayout(QHBoxLayout):
 
-    def __init__(self, left_widget: QWidget, right_widget: QWidget, stretch=False, parent=None):
+    def __init__(
+            self,
+            left_widget: QWidget,
+            right_widget: QWidget,
+            stretch: bool = False,
+            parent: QWidget = None
+        ):
         super().__init__(parent)
         self.addWidget(left_widget)
         self.addWidget(right_widget)
@@ -14,15 +20,16 @@ class HLayout(QHBoxLayout):
 
 class AlignedLabel(QLabel):
 
-    def __init__(self, alignment: Qt.AlignmentFlag, string: str = "", parent=None):
+    def __init__(self, alignment: Qt.AlignmentFlag, string: str = "", parent: QWidget = None):
         super().__init__(string, parent)
         self.setAlignment(alignment)
 
 class StatusPanel(QFrame):
 
-    def __init__(self, title: str, iconPath: str, parent=None):
+    def __init__(self, title: str, iconPath: str, parent: QWidget = None):
         super().__init__(parent)
-        self.setStyleSheet("""
+        self.setStyleSheet(
+            """
             QFrame{
                 background-color: #232629;
             }
@@ -30,14 +37,15 @@ class StatusPanel(QFrame):
                 border: 1px solid #75787B;
                 border-radius: 5px;
             }
-        """)
+            """
+        )
         self.setObjectName("status_panel")
         self.setFixedHeight(275)
 
         self.layout = QVBoxLayout(self)
-        self.icon_label = AlignedLabel(Qt.AlignCenter)
-        self.icon_label.setPixmap(QPixmap(iconPath))
-        self.icon_label.setFixedHeight(60)
+        icon_label = AlignedLabel(Qt.AlignCenter)
+        icon_label.setPixmap(QPixmap(iconPath))
+        icon_label.setFixedHeight(60)
         self.title_label = AlignedLabel(Qt.AlignCenter, title)
         self.title_label.setStyleSheet("font-size: 13px; font-weight: bold;")
         self.last_sync_label = InformationLabel(
@@ -48,7 +56,7 @@ class StatusPanel(QFrame):
         self.layout.addSpacing(5)
         self.layout.addWidget(self.title_label)
         self.layout.addSpacing(5)
-        self.layout.addWidget(self.icon_label)
+        self.layout.addWidget(icon_label)
         self.layout.addSpacing(15)
         self.layout.addWidget(self.last_sync_label)
         self.layout.addWidget(self.message)
@@ -70,7 +78,7 @@ class InformationLabel(QWidget):
     DATE = 3
     DISABLE = 4
 
-    def __init__(self, string: str, message_type=SUCCESS, parent=None):
+    def __init__(self, string: str, message_type: int = SUCCESS, parent: QWidget = None):
         super().__init__(parent)
         self.layout = QHBoxLayout(self)
         self.layout.setContentsMargins(0, 0, 0, 0)
@@ -88,11 +96,11 @@ class InformationLabel(QWidget):
         self.layout.addWidget(self.msg_label)
         self.layout.addStretch()
 
-    def set_message(self, string: str = "", message_type=SUCCESS):
+    def set_message(self, string: str = "", message_type: int = SUCCESS):
         self.icon_label.setPixmap(self.get_icon_pixmap(message_type))
         self.msg_label.setText(string)
 
-    def get_icon_pixmap(self, message_type):
+    def get_icon_pixmap(self, message_type: int) -> QPixmap:
         if message_type == self.SUCCESS:
             return QPixmap("res/success_icon.png")
         elif message_type == self.ERROR:
@@ -103,11 +111,3 @@ class InformationLabel(QWidget):
             return QPixmap("res/date_icon.png")
         elif message_type == self.DISABLE:
             return QPixmap()
-
-class ToolButton(QToolButton):
-
-    def __init__(self, text="", icon=QIcon(), parent=None):
-        super().__init__(parent)
-        self.setText(text)
-        self.setIcon(icon)
-        self.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)

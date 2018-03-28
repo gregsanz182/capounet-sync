@@ -1,4 +1,3 @@
-
 import requests
 from Settings import Settings
 
@@ -38,8 +37,7 @@ class RequestsHandler():
             raise GeneralConnectionError(exception)
 
 class RequestsHandlerException(Exception):
-    """
-    def __init__(self, message, original_exception=None):
+    def __init__(self, message: str, original_exception=None):
         super().__init__(message)
         self.message = message
         self.original_exception = original_exception
@@ -56,7 +54,7 @@ class InternalServerError(RequestsHandlerException):
 
 class RequestError(RequestsHandlerException):
 
-    def __init__(self, http_code, original_exception=None):
+    def __init__(self, http_code: int, original_exception=None):
         super().__init__(
             "Ocurrió un error en la petición.\nCódigo HTTP: {}".format(http_code),
             original_exception)
