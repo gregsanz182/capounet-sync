@@ -26,7 +26,7 @@ class Settings():
     prestamos_file = {
         "enabled": True,
         "file_path": "",
-        "name": "Socios y Ahorros",
+        "name": "Prestamos",
         "hash": "",
         "fields": [
             ("cedula", True),
@@ -104,6 +104,7 @@ class Settings():
         cls.client_id = client_id
         cls.client_secret = client_secret
         cls.qsettings = QSettings("settings.ini", QSettings.IniFormat)
+        cls.qsettings_hash = QSettings("hashes.ini", QSettings.IniFormat)
         fernet = Fernet(cls.secret)
         if cls.qsettings.value("tokens/access_token"):
             cls.access_token = cls.get_setting(
@@ -115,9 +116,11 @@ class Settings():
         aux_file = cls.qsettings.value("paths/socios_file_path")
         if aux_file:
             cls.socios_file = aux_file
+            cls.socios_file["hash"] = cls.qsettings_hash.value("socios")
         aux_file = cls.qsettings.value("paths/prestamos_file_path")
         if aux_file:
             cls.prestamos_file = aux_file
+            cls.prestamos_file["hash"] = cls.qsettings_hash.value("prestamos")
         cls.refresh_rate = cls.qsettings.value("others/refresh_rate")
         if not cls.refresh_rate:
             cls.refresh_rate = 0
@@ -143,5 +146,5 @@ class Settings():
 
     @classmethod
     def save_files_hash(cls):
-        cls.qsettings.setValue("paths/socios_file_path", cls.socios_file)
-        cls.qsettings.setValue("paths/prestamos_file_path", cls.prestamos_file)
+        cls.qsettings_hash.setValue("socios", cls.socios_file["hash"])
+        cls.qsettings_hash.setValue("prestamos", cls.prestamos_file["hash"])

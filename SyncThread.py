@@ -50,18 +50,21 @@ class SyncThread(QObject, Thread):
                 self.window.prestamos_panel
             )
         while True:
-            if self.sync_file(Settings.socios_file, self.window.socios_panel):
+            flag1 = self.sync_file(Settings.socios_file, self.window.socios_panel)
+            flag2 = self.sync_file(Settings.prestamos_file, self.window.prestamos_panel)
+            if flag1 or flag2:
                 Settings.save_files_hash()
 
             time.sleep(4)
 
     def sync_file(self, file_info: dict, panel: QWidget):
         if not file_info["enabled"]:
-            return
+            return False
 
         if not path.isfile(file_info["file_path"]) \
-            and not file_info["file_path"].lower().endswith(".csv"):
-            if not self.flag.get(file_info["file_path"]):
+            or not path.exists(file_info["file_path"]) \
+            or not file_info["file_path"].lower().endswith(".csv"):
+            if not self.flag.get(file_info["name"]):
                 self.log_signal.emit(
                     'El archivo "{}" no es una ruta válida. \
                     Por favor, verificar en <strong>Ajustes.</strong>'.format(
@@ -73,17 +76,17 @@ class SyncThread(QObject, Thread):
                     InformationLabel.ERROR,
                     panel
                 )
-                self.flag[file_info["file_path"]] = True
-            return
+                self.flag[file_info["name"]] = True
+            return False
 
         if file_info["hash"] == self.get_file_hash(file_info["file_path"]):
-            return
+            return False
         file_info["hash"] = self.get_file_hash(file_info["file_path"])
 
         with open(file_info["file_path"], newline='') as csvfile:
             data = list(csv.DictReader(csvfile))
             if not self.check_csv_integrity(data, file_info["fields"]):
-                if not self.flag.get(file_info["file_path"]):
+                if not self.flag.get(file_info["name"]):
                     self.log_signal.emit(
                         'La integridad del CSV <strong>"{}"</strong> es inválida. \
                         Pueden faltar campos o valores. Por favor verificar \
@@ -94,11 +97,12 @@ class SyncThread(QObject, Thread):
                         InformationLabel.ERROR,
                         panel
                     )
-                    self.flag[file_info["file_path"]] = True
-                return
-        self.write_json(data, "hola.json")
+                    self.flag[file_info["name"]] = True
+                return False
+        self.write_json(data, file_info["file_path"]+".json")
 
-        self.flag[file_info["file_path"]] = False
+        self.flag[file_info["name"]] = False
+        return True
 
     def get_file_hash(self, file_path: str) -> str:
         buffersize = 65536
