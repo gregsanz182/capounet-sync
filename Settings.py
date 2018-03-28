@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+"""Este módulo contiene la clase Settings, encargada de guardar las preferencias y configuraciones
+de la aplicación"""
+
 from PyQt5.QtCore import QSettings
 from cryptography.fernet import Fernet
 

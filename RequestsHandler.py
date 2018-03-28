@@ -1,10 +1,15 @@
+
 import requests
 from Settings import Settings
 
 class RequestsHandler():
+    """Clase encargada de realizar las peticiones al servidor API. Proporciona métodos estáticos
+    para cada una de las peticiones requeridas en la aplicación"""
 
     @staticmethod
-    def get_access_token(username, password, domain):
+    def get_access_token(username: str, password: str, domain: str):
+        """Método estático que realiza la petición de token de acceso y refresco a la API por medio
+        de OAuth2 Password Grant"""
         Settings.domain = domain
         data = {
             "grant_type": "password",
@@ -33,7 +38,7 @@ class RequestsHandler():
             raise GeneralConnectionError(exception)
 
 class RequestsHandlerException(Exception):
-
+    """
     def __init__(self, message, original_exception=None):
         super().__init__(message)
         self.message = message
