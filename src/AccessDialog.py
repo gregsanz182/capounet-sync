@@ -16,8 +16,11 @@ class AccessDialog(QDialog):
     DEFAULT_MESSAGE = 1
 
     def __init__(self, parent: QWidget = None):
-        """Inicializa el objeto. Recibe como parametro el QWidget padre.
-        Settings.load_settings() debe haber sido llamado previamente."""
+        """Inicializa el objeto.
+        Settings.load_settings() debe haber sido llamado previamente.
+        
+        :param string: str: 
+        """
         super().__init__(parent)
         self.init_components()
 
