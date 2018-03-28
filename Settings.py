@@ -13,13 +13,34 @@ class Settings():
         "enabled": True,
         "file_path": "",
         "name": "Socios y Ahorros",
-        "hash": ""
+        "hash": "",
+        "fields": [
+            ("cedula", True),
+            ("nombre", True),
+            ("f_ingreso", False),
+            ("tot_aho_acum", True),
+            ("tot_ret_acum", True),
+            ("dispon_ahorro", True)
+        ]
     }
     prestamos_file = {
         "enabled": True,
         "file_path": "",
         "name": "Socios y Ahorros",
-        "hash": ""
+        "hash": "",
+        "fields": [
+            ("cedula", True),
+            ("concedido", True),
+            ("amortizado", True),
+            ("saldo", True),
+            ("f_inicio", True),
+            ("f_fin", True),
+            ("descuento", True),
+            ("cod_pres", True),
+            ("nom_pres", True),
+            ("cuo_a_canc", True),
+            ("cuo_canc", True)
+        ]
     }
     client_id = None
     client_secret = None
@@ -91,24 +112,14 @@ class Settings():
             cls.refresh_token = cls.get_setting(
                 bytes.decode(fernet.decrypt(cls.qsettings.value("tokens/refresh_token"))))
         cls.access_token_expire = cls.qsettings.value("tokens/access_token_expire")
-        cls.socios_file = cls.qsettings.value("paths/socios_file_path")
-        if cls.socios_file is None:
-            cls.socios_file = {
-                "enabled": True,
-                "file_path": "",
-                "name": "Socios y Ahorros",
-                "hash": ""
-            }
-        cls.prestamos_file = cls.qsettings.value("paths/prestamos_file_path")
-        if cls.prestamos_file is None:
-            cls.prestamos_file = prestamos_file = {
-                "enabled": True,
-                "file_path": "",
-                "name": "Socios y Ahorros",
-                "hash": ""
-            }
+        aux_file = cls.qsettings.value("paths/socios_file_path")
+        if aux_file:
+            cls.socios_file = aux_file
+        aux_file = cls.qsettings.value("paths/prestamos_file_path")
+        if aux_file:
+            cls.prestamos_file = aux_file
         cls.refresh_rate = cls.qsettings.value("others/refresh_rate")
-        if cls.refresh_rate is None:
+        if not cls.refresh_rate:
             cls.refresh_rate = 0
         else:
             cls.refresh_rate = int(cls.refresh_rate)

@@ -1,6 +1,7 @@
 import time
 import zlib
 import csv
+import json
 from threading import Thread
 from os import path
 from MainWindow import MainWindow
@@ -17,7 +18,8 @@ class SyncThread(QObject, Thread):
     sync_messages = {
         "disable_sync": "La sincronización se encuentra deshabilitada. \
                         <br>Habilitar en <strong>Ajustes</strong>.",
-        "file_not_found": "No se encuentra el archivo."
+        "file_not_found": "No se encuentra el archivo.",
+        "invalid_file_integrity": "Fallo en la integridad del archivo."
     }
 
     def __init__(self, mainWindow: MainWindow):
@@ -48,35 +50,55 @@ class SyncThread(QObject, Thread):
                 self.window.prestamos_panel
             )
         while True:
-            self.sync_file(Settings.socios_file, self.window.socios_panel)
-            self.sync_file(Settings.prestamos_file, self.window.prestamos_panel)
+            if self.sync_file(Settings.socios_file, self.window.socios_panel):
+                Settings.save_files_hash()
 
-            Settings
             time.sleep(4)
 
     def sync_file(self, file_info: dict, panel: QWidget):
         if not file_info["enabled"]:
             return
 
-        if not path.isfile(file_info["file_path"]) and not file_info["file_path"].lower().endswith(".csv"):
+        if not path.isfile(file_info["file_path"]) \
+            and not file_info["file_path"].lower().endswith(".csv"):
             if not self.flag.get(file_info["file_path"]):
-                self.log_signal.emit('El archivo "{}" no es una ruta válida. \
-                    Por favor, verificar en <strong>Ajustes.</strong>'.format(file_info["file_path"]))
+                self.log_signal.emit(
+                    'El archivo "{}" no es una ruta válida. \
+                    Por favor, verificar en <strong>Ajustes.</strong>'.format(
+                        file_info["file_path"]
+                    )
+                )
                 self.changed_sync_state_signal.emit(
                     self.sync_messages["file_not_found"],
                     InformationLabel.ERROR,
-                    panel)
+                    panel
+                )
                 self.flag[file_info["file_path"]] = True
             return
 
         if file_info["hash"] == self.get_file_hash(file_info["file_path"]):
             return
+        file_info["hash"] = self.get_file_hash(file_info["file_path"])
 
         with open(file_info["file_path"], newline='') as csvfile:
-            content = list(csv.DictReader(csvfile))
+            data = list(csv.DictReader(csvfile))
+            if not self.check_csv_integrity(data, file_info["fields"]):
+                if not self.flag.get(file_info["file_path"]):
+                    self.log_signal.emit(
+                        'La integridad del CSV <strong>"{}"</strong> es inválida. \
+                        Pueden faltar campos o valores. Por favor verificar \
+                        el contenido de este.'.format(file_info["name"])
+                    )
+                    self.changed_sync_state_signal.emit(
+                        self.sync_messages["invalid_file_integrity"],
+                        InformationLabel.ERROR,
+                        panel
+                    )
+                    self.flag[file_info["file_path"]] = True
+                return
+        self.write_json(data, "hola.json")
 
-        file_info["hash"] = self.get_file_hash(file_info["file_path"])
-        self.flag[file_info["file_path"]] = True
+        self.flag[file_info["file_path"]] = False
 
     def get_file_hash(self, file_path: str) -> str:
         buffersize = 65536
@@ -87,5 +109,21 @@ class SyncThread(QObject, Thread):
             while buffr:
                 crcvalue = zlib.crc32(buffr, crcvalue)
                 buffr = afile.read(buffersize)
-        
+
         return hex(crcvalue)
+
+    def check_csv_integrity(self, data: list, fields: list):
+        for row in data:
+            for field in fields:
+                if field[1] and not row.get(field[0]):
+                    return False
+        return True
+
+    def write_json(self, data, json_file):
+        with open(json_file, "w") as f:
+            f.write(json.dumps(
+                data,
+                sort_keys=False,
+                indent=4,
+                separators=(',', ': ')
+            ))
