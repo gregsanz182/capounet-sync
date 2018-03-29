@@ -2,6 +2,7 @@ import time
 import zlib
 import csv
 import json
+from datetime import datetime
 from threading import Thread
 from os import path
 from MainWindow import MainWindow
@@ -9,6 +10,7 @@ from PyQt5.QtCore import pyqtSignal, QObject
 from PyQt5.QtWidgets import QWidget
 from GuiTools import InformationLabel, StatusPanel
 from Settings import Settings
+from RequestsHandler import RequestsHandler, RequestsHandlerException, GeneralConnectionError
 
 class SyncThread(QObject, Thread):
 
@@ -19,7 +21,10 @@ class SyncThread(QObject, Thread):
         "disable_sync": "La sincronización se encuentra deshabilitada. \
                         <br>Habilitar en <strong>Ajustes</strong>.",
         "file_not_found": "No se encuentra el archivo.",
-        "invalid_file_integrity": "Fallo en la integridad del archivo."
+        "invalid_file_integrity": "Fallo en la integridad del archivo.",
+        "connection_error": "Error en la conexión.",
+        "request_error": "Error en el envio de información.",
+        "all_ok": "Todo funciona correctamente."
     }
 
     def __init__(self, mainWindow: MainWindow):
@@ -49,13 +54,16 @@ class SyncThread(QObject, Thread):
                 InformationLabel.WARNING,
                 self.window.prestamos_panel
             )
+        self.__change_last_sync(Settings.socios_file, self.window.socios_panel)
+        self.__change_last_sync(Settings.prestamos_file, self.window.prestamos_panel)
         while True:
             flag1 = self.__sync_file(Settings.socios_file, self.window.socios_panel)
-            flag2 = self.__sync_file(Settings.prestamos_file, self.window.prestamos_panel)
+            flag2 = False
+            #self.__sync_file(Settings.prestamos_file, self.window.prestamos_panel)
             if flag1 or flag2:
                 Settings.save_files_hash()
 
-            time.sleep(4)
+            time.sleep(20)
 
     def __sync_file(self, file_info: dict, panel: QWidget):
         if not file_info["enabled"]:
@@ -81,7 +89,6 @@ class SyncThread(QObject, Thread):
 
         if file_info["hash"] == self.get_file_hash(file_info["file_path"]):
             return False
-        file_info["hash"] = self.get_file_hash(file_info["file_path"])
 
         with open(file_info["file_path"], newline='') as csvfile:
             data = list(csv.DictReader(csvfile))
@@ -99,9 +106,41 @@ class SyncThread(QObject, Thread):
                     )
                     self.flag[file_info["name"]] = True
                 return False
-        self.write_json(data, file_info["file_path"]+".json")
+
+        data_http = {
+            "data": json.dumps(data)
+        }
+        try:
+            RequestsHandler.send_data_to_api(data_http, file_info["resource_path"])
+        except GeneralConnectionError as exception:
+            self.log_signal.emit("No se pudo acceder al servidor.")
+            self.changed_sync_state_signal(
+                self.sync_messages["connection_error"],
+                InformationLabel.ERROR,
+                panel
+            )
+        except RequestsHandlerException as exception:
+            self.log_signal.emit("Ocurrió un error en el envio de información.")
+            self.log_signal.emit(exception.message)
+            self.changed_sync_state_signal(
+                self.sync_messages["request_error"],
+                InformationLabel.ERROR,
+                panel
+            )
+            return
 
         self.flag[file_info["name"]] = False
+        file_info["hash"] = self.get_file_hash(file_info["file_path"])
+        self.log_signal.emit(
+            "Archivo<strong> {} </strong>sincronizado correctamente.".format(file_info["name"])
+        )
+        self.changed_sync_state_signal.emit(
+            self.sync_messages["all_ok"],
+            InformationLabel.SUCCESS,
+            panel
+        )
+        file_info["last_sync"] = datetime.now().strftime("%H:%M %d-%m-%Y")
+        self.__change_last_sync(file_info, panel)
         return True
 
     def get_file_hash(self, file_path: str) -> str:
@@ -122,6 +161,13 @@ class SyncThread(QObject, Thread):
                 if field[1] and not row.get(field[0]):
                     return False
         return True
+
+    def __change_last_sync(self, file_info: dict, panel: QWidget):
+        self.changed_sync_state_signal.emit(
+            file_info["last_sync"],
+            InformationLabel.DATE,
+            panel
+        )
 
     def write_json(self, data, json_file):
         with open(json_file, "w") as f:

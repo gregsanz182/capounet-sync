@@ -62,7 +62,7 @@ class MainWindow(QMainWindow):
         if self.text_log.verticalScrollBar().value() == self.text_log.verticalScrollBar().maximum():
             flag = True
         self.text_log.insertHtml("<br><strong>>{}</strong>&nbsp;&nbsp;{}<br>".format(
-            datetime.now().strftime("%d/%m/%Y %H:%M"),
+            datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
             string
         ))
         if flag:

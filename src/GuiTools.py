@@ -49,8 +49,9 @@ class StatusPanel(QFrame):
         self.title_label = AlignedLabel(Qt.AlignCenter, title)
         self.title_label.setStyleSheet("font-size: 13px; font-weight: bold;")
         self.last_sync_label = InformationLabel(
-            "Última sincronización exitosa:\n02:35pm 12-06-2018",
-            InformationLabel.DATE)
+            "Última sincronización exitosa:",
+            InformationLabel.DATE
+        )
         self.message = InformationLabel("", InformationLabel.DISABLE)
 
         self.layout.addSpacing(5)
@@ -66,7 +67,10 @@ class StatusPanel(QFrame):
 
     def change_message(self, string: str, message_type):
         if message_type == InformationLabel.DATE:
-            self.last_sync_label.set_message(string, InformationLabel.DATE)
+            self.last_sync_label.set_message(
+                "Última sincronización exitosa:\n{}".format(string),
+                InformationLabel.DATE
+            )
         else:
             self.message.set_message(string, message_type)
 

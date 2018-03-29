@@ -8,7 +8,6 @@ from cryptography.fernet import Fernet
 class Settings():
     __token_path = "/oauth/token"
     __api_path = "/api"
-    __socios_update_path = "/socios/update"
     __secret = b'AvA6jPWRxrZAdQV0RSHAWtZOLrofSOG693XbjSwD6MA='
     access_token = None
     refresh_token = None
@@ -25,7 +24,9 @@ class Settings():
             ("tot_aho_acum", True),
             ("tot_ret_acum", True),
             ("dispon_ahorro", True)
-        ]
+        ],
+        "resource_path": "/socios/update",
+        "last_sync": ""
     }
     prestamos_file = {
         "enabled": True,
@@ -44,7 +45,9 @@ class Settings():
             ("nom_pres", True),
             ("cuo_a_canc", True),
             ("cuo_canc", True)
-        ]
+        ],
+        "resource_path": "/prestamos/update",
+        "last_sync": ""
     }
     client_id = None
     client_secret = None
@@ -101,6 +104,7 @@ class Settings():
         cls.qsettings.setValue("paths/socios_file_path", cls.socios_file)
         cls.qsettings.setValue("paths/prestamos_file_path", cls.prestamos_file)
         cls.qsettings.setValue("others/refresh_rate", cls.refresh_rate)
+        cls.qsettings.setValue("urls/domain", cls.domain)
         cls.qsettings.sync()
 
     @classmethod
@@ -108,7 +112,7 @@ class Settings():
         cls.client_id = client_id
         cls.client_secret = client_secret
         cls.qsettings = QSettings("settings.ini", QSettings.IniFormat)
-        cls.qsettings_hash = QSettings("hashes.ini", QSettings.IniFormat)
+        cls.qsettings_files = QSettings("files_info.ini", QSettings.IniFormat)
         fernet = Fernet(cls.__secret)
         if cls.qsettings.value("tokens/access_token"):
             cls.access_token = cls.__get_setting(
@@ -119,12 +123,15 @@ class Settings():
         cls.access_token_expire = cls.qsettings.value("tokens/access_token_expire")
         aux_file = cls.qsettings.value("paths/socios_file_path")
         if aux_file:
-            cls.socios_file = aux_file
-            cls.socios_file["hash"] = cls.qsettings_hash.value("socios")
+            cls.socios_file.update(aux_file)
+            cls.socios_file["hash"] = cls.qsettings_files.value("socios/hash")
+            cls.socios_file["last_sync"] = cls.qsettings_files.value("socios/last_sync")
         aux_file = cls.qsettings.value("paths/prestamos_file_path")
         if aux_file:
-            cls.prestamos_file = aux_file
-            cls.prestamos_file["hash"] = cls.qsettings_hash.value("prestamos")
+            cls.prestamos_file.update(aux_file)
+            cls.prestamos_file["hash"] = cls.qsettings_files.value("prestamos/hash")
+            cls.prestamos_file["last_sync"] = cls.qsettings_files.value("prestamos/last_sync")
+        cls.domain = cls.qsettings.value("urls/domain")
         cls.refresh_rate = cls.qsettings.value("others/refresh_rate")
         if not cls.refresh_rate:
             cls.refresh_rate = 0
@@ -149,6 +156,12 @@ class Settings():
         return cls.domain + cls.__token_path
 
     @classmethod
+    def get_api_resource_url(cls, resource_url: str) -> str:
+        return cls.domain + cls.__api_path + resource_url
+
+    @classmethod
     def save_files_hash(cls):
-        cls.qsettings_hash.setValue("socios", cls.socios_file["hash"])
-        cls.qsettings_hash.setValue("prestamos", cls.prestamos_file["hash"])
+        cls.qsettings_files.setValue("socios/hash", cls.socios_file["hash"])
+        cls.qsettings_files.setValue("prestamos/hash", cls.prestamos_file["hash"])
+        cls.qsettings_files.setValue("socios/last_sync", cls.socios_file["last_sync"])
+        cls.qsettings_files.setValue("prestamos/last_sync", cls.prestamos_file["last_sync"])
