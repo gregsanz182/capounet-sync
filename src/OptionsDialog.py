@@ -27,9 +27,6 @@ class OptionsDialog(QDialog):
         self.socios_button.setStyleSheet("height: 18px; background-color: #232629;")
         self.prestamos_button.setIcon(QIcon("res/search_icon.png"))
         self.prestamos_button.setStyleSheet("height: 18px; background-color: #232629;")
-        self.refresh_combo = QComboBox()
-        self.refresh_combo.addItems(Settings.refresh_options)
-        self.refresh_combo.setItemDelegate(QStyledItemDelegate())
         self.cancel_button = QPushButton("Cancelar")
         self.cancel_button.setObjectName("normal_button")
         self.accept_button = QPushButton("Aceptar")
@@ -48,8 +45,6 @@ class OptionsDialog(QDialog):
             QLabel("Archivo de Préstamos"),
             True))
         self.layout.addLayout(HLayout(self.prestamos_path, self.prestamos_button))
-        self.layout.addSpacing(10)
-        self.layout.addLayout(HLayout(QLabel("Tasa de refesco: "), self.refresh_combo, True))
         self.layout.addStretch()
         self.layout.addLayout(HLayout(self.cancel_button, self.accept_button))
         self.setModal(True)
@@ -65,7 +60,6 @@ class OptionsDialog(QDialog):
         )
         self.prestamos_path.setText(Settings.prestamos_file["file_path"])
         self.socios_path.setText(Settings.socios_file["file_path"])
-        self.refresh_combo.setCurrentIndex(Settings.refresh_rate)
 
     def __make_connections(self):
         self.socios_button.clicked.connect(self.__select_socios_path)
@@ -94,7 +88,6 @@ class OptionsDialog(QDialog):
             "enabled": True if self.prestamos_check_box.checkState() == Qt.Checked else False,
             "file_path": self.prestamos_path.text()
         })
-        Settings.refresh_rate = self.refresh_combo.currentIndex()
         Settings.save_settings()
         self.accept()
 

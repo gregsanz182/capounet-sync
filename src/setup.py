@@ -13,7 +13,7 @@ options = {
 }
 
 executables = [
-    Executable('main.py', base=base)
+    Executable('src/main.py', base=base)
 ]
 
 setup(

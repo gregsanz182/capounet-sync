@@ -12,6 +12,7 @@ class Settings():
     access_token = None
     refresh_token = None
     qsettings = None
+    qsetting_files = None
     socios_file = {
         "enabled": True,
         "file_path": "",
@@ -53,13 +54,6 @@ class Settings():
     client_secret = None
     domain = None
     access_token_expire = None
-    refresh_options = [
-        "1 Hora",
-        "3 Horas",
-        "6 Horas",
-        "12 Horas"
-    ]
-    refresh_rate = 0
     global_style = """
         QLabel{
             color: #BDBDBD;
@@ -103,7 +97,6 @@ class Settings():
             cls.qsettings.setValue("tokens/access_token_expire", cls.access_token_expire)
         cls.qsettings.setValue("paths/socios_file_path", cls.socios_file)
         cls.qsettings.setValue("paths/prestamos_file_path", cls.prestamos_file)
-        cls.qsettings.setValue("others/refresh_rate", cls.refresh_rate)
         cls.qsettings.setValue("urls/domain", cls.domain)
         cls.qsettings.sync()
 
@@ -132,11 +125,6 @@ class Settings():
             cls.prestamos_file["hash"] = cls.qsettings_files.value("prestamos/hash")
             cls.prestamos_file["last_sync"] = cls.qsettings_files.value("prestamos/last_sync")
         cls.domain = cls.qsettings.value("urls/domain")
-        cls.refresh_rate = cls.qsettings.value("others/refresh_rate")
-        if not cls.refresh_rate:
-            cls.refresh_rate = 0
-        else:
-            cls.refresh_rate = int(cls.refresh_rate)
 
     @classmethod
     def __get_setting(cls, setting: str) -> str:

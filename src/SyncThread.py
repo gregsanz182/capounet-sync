@@ -119,6 +119,8 @@ class SyncThread(QObject, Thread):
                 InformationLabel.ERROR,
                 panel
             )
+            self.flag[file_info["name"]] = True
+            return
         except RequestsHandlerException as exception:
             self.log_signal.emit("Ocurrió un error en el envio de información.")
             self.log_signal.emit(exception.message)
@@ -127,6 +129,7 @@ class SyncThread(QObject, Thread):
                 InformationLabel.ERROR,
                 panel
             )
+            self.flag[file_info["name"]] = True
             return
 
         self.flag[file_info["name"]] = False
