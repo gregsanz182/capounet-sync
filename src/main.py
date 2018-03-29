@@ -29,6 +29,7 @@ def main():
             sync_thread = SyncThread(main_window)
             sync_thread.start()
             main_app.exec_()
+            sync_thread.stop_sync()
 
         sys.exit(0)
 

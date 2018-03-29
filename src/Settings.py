@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-"""Este módulo contiene la clase Settings, encargada de guardar las preferencias y configuraciones
-de la aplicación"""
-
 from PyQt5.QtCore import QSettings
 from cryptography.fernet import Fernet
 
@@ -79,6 +75,7 @@ class Settings():
     @classmethod
     def save_settings(cls):
         fernet = Fernet(cls.__secret)
+
         if cls.access_token:
             cls.qsettings.setValue(
                 "tokens/access_token",
@@ -86,6 +83,7 @@ class Settings():
                     cls.access_token,
                     cls.client_secret,
                     cls.client_id))))
+
         if cls.refresh_token:
             cls.qsettings.setValue(
                 "tokens/refresh_token",
@@ -93,10 +91,18 @@ class Settings():
                     cls.refresh_token,
                     cls.client_secret,
                     cls.client_id))))
+
         if cls.access_token_expire:
             cls.qsettings.setValue("tokens/access_token_expire", cls.access_token_expire)
-        cls.qsettings.setValue("paths/socios_file_path", cls.socios_file)
-        cls.qsettings.setValue("paths/prestamos_file_path", cls.prestamos_file)
+
+        cls.qsettings.setValue(
+            "paths/socios_file_path",
+            {k: v for k, v in cls.socios_file.items() if k in ("enabled", "file_path")}
+        )
+        cls.qsettings.setValue(
+            "paths/prestamos_file_path",
+            {k: v for k, v in cls.prestamos_file.items() if k in ("enabled", "file_path")}
+        )
         cls.qsettings.setValue("urls/domain", cls.domain)
         cls.qsettings.sync()
 
@@ -153,3 +159,4 @@ class Settings():
         cls.qsettings_files.setValue("prestamos/hash", cls.prestamos_file["hash"])
         cls.qsettings_files.setValue("socios/last_sync", cls.socios_file["last_sync"])
         cls.qsettings_files.setValue("prestamos/last_sync", cls.prestamos_file["last_sync"])
+        cls.qsettings_files.sync()

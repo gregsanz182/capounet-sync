@@ -16,6 +16,7 @@ class SyncThread(QObject, Thread):
 
     log_signal = pyqtSignal(str)
     changed_sync_state_signal = pyqtSignal(str, int, StatusPanel)
+    runThread = True
 
     sync_messages = {
         "disable_sync": "La sincronización se encuentra deshabilitada. \
@@ -56,7 +57,7 @@ class SyncThread(QObject, Thread):
             )
         self.__change_last_sync(Settings.socios_file, self.window.socios_panel)
         self.__change_last_sync(Settings.prestamos_file, self.window.prestamos_panel)
-        while True:
+        while self.runThread:
             flag1 = self.__sync_file(Settings.socios_file, self.window.socios_panel)
             flag2 = False
             #self.__sync_file(Settings.prestamos_file, self.window.prestamos_panel)
@@ -171,6 +172,9 @@ class SyncThread(QObject, Thread):
             InformationLabel.DATE,
             panel
         )
+
+    def stop_sync(self):
+        self.runThread = False
 
     def write_json(self, data, json_file):
         with open(json_file, "w") as f:
