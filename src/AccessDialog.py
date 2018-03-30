@@ -1,5 +1,9 @@
-"""Este módulo contiene la clase AccessDialog, encargada de presentar un QDialog que permita
-obtener los tokens necesarios para el uso de la API por medio de las credenciales de usuario."""
+# -*- coding: utf-8 -*-
+"""Este módulo incluye AccessDialog, un QDialog para el manejo de las credenciales de usuario.
+
+AccessDialog pregunta las credenciales de usuario y obtiene los tokens de acceso y de refresco
+necesarios para la el manejo de la API rest.
+"""
 
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QWidget
 from PyQt5.QtCore import Qt
@@ -8,22 +12,49 @@ from RequestsHandler import RequestsHandler, RequestsHandlerException
 from Settings import Settings
 
 class AccessDialog(QDialog):
-    """QDialog para el acceso a la aplicación. Proporciona QLineEdit para el 'username', 'password'
-    y 'dominio'. También realiza la petición al servidor y obtiene los tokens de acceso y refresco.
+    """QDialog para la obtención de las credenciales de usuario y la petición de tokens.
+
+    Proporciona QLineEdit para el 'username', 'password' y 'dominio'.
+    También realiza la petición al servidor API y obtiene los tokens de acceso y refresco.
+
+    Para abrir este QDialog basta con llamar a AccessDialog.obtain_configuration().
+
+    Note:
+        La configuración de la aplicación debe haber sido cargada previamente. Para esto llamar
+        a Settings.load_settings()
+
+    Attributes:
+        layout (QVBoxLayout): Layout que contendrá los widgets de este QDialog.
+        domain_input (QLineEdit): Permite el ingreso del dominio de la API.
+        username_input (QLineEdit): Permite el ingreso del nombre de usuario.
+        password_input (QLineEdit): Permite el ingreso de la contraseña del usuario.
+        accept_button (QPushButton): Botón para aceptar el formulario y enviar la petición.
+        message_label (QLabel): Muestra los mensajes al usuario.
     """
 
-    ERROR_MESSAGE = 0
-    DEFAULT_MESSAGE = 1
+    ERROR_MESSAGE = 0 #Identifica un mensaje de error
+    DEFAULT_MESSAGE = 1 #Identifica un mensaje normal
 
     def __init__(self, parent: QWidget = None):
-        """Inicializa el objeto.
-        Settings.load_settings() debe haber sido llamado previamente.
+        """Constructor de la clase. Construye e inicializa una instancia de AccessDialog.
+
+        Note:
+            Antes de instanciar un objeto de esta clase, la configuración del programa debe haber
+            sido cargada. Para esto llamar a Settings.load_settings().
+
+        Args:
+            parent (QWidget): Padre de este QDialog. Defaults to None.
         """
         super().__init__(parent)
         self.__init_components()
 
     def __init_components(self):
-        """Inicializa todos los componentes del QDialog"""
+        """Inicializa los atributos de la clase y otros componentes del objeto.
+
+        Note:
+            Esta función no debe ser llamada desde el exterior, puesto que su uso es interno en la
+            clase.
+        """
         #Atributos del dialogo
         self.setWindowTitle("Conceder permisos")
         self.setFixedWidth(320)
@@ -52,9 +83,9 @@ class AccessDialog(QDialog):
         self.message_label.setFixedHeight(60)
 
         #QPushButton 'Aceptar'
-        self.boton_aceptar = QPushButton("Aceptar")
-        self.boton_aceptar.setFixedHeight(40)
-        self.boton_aceptar.setObjectName("accept_button")
+        self.accept_button = QPushButton("Aceptar")
+        self.accept_button.setFixedHeight(40)
+        self.accept_button.setObjectName("accept_button")
 
         #Inserción de items en el layout del QDialog
         self.layout.addSpacing(10)
@@ -68,21 +99,34 @@ class AccessDialog(QDialog):
         self.layout.addWidget(self.password_input)
         self.layout.addWidget(self.message_label)
         self.layout.addSpacing(10)
-        self.layout.addWidget(self.boton_aceptar)
+        self.layout.addWidget(self.accept_button)
 
-        self.boton_aceptar.clicked.connect(self.__send_request)
+        self.accept_button.clicked.connect(self.__send_request)
 
     @staticmethod
     def obtain_configuration() -> bool:
-        """Crea un AccessDialog, realiza la petición de tokens y los guarda en Settings.
-        Devuelve True si se obtuvó los tokens, False si se cancelo el QDialog.
-        Settings.load_settings() debe haber sido llamado previamente."""
+        """Abre un AccessDialog para su uso rápido.
+
+        Crea un objeto instancia de AccessDialog y a la vez abre el Dialog.
+
+        Note:
+            Puede ser llamado sin necesidad de instancia un objeto previamente.
+
+        Returns:
+            bool: True si la obtención de los tokens fue exitosa, False si se canceló el dialog
+                (Por medio del botón 'Salir' de la ventana).
+        """
         dialog = AccessDialog()
         dialog.show()
         return dialog.exec_()
 
     def __send_request(self):
-        """Envia la petición al servidor para obtener los tokens"""
+        """Envia la petición al servidor para obtener los tokens.
+
+        Note:
+            Esta función no debe ser llamada desde el exterior, puesto que su uso es interno en la
+            clase.
+        """
         message = ""
         #Verifica si todos los QLineEdit han sido llenados.
         if not self.domain_input.text():
@@ -112,8 +156,17 @@ class AccessDialog(QDialog):
             self.print_message(exception.message, self.ERROR_MESSAGE)
 
     def print_message(self, string: str, message_type: int = DEFAULT_MESSAGE):
-        """Imprime el 'string' que recibe como parametro, con el tipo de mensaje especificado
-        en 'message_type'"""
+        """Imprime un mensaje en el message_label.
+
+        Imprime el 'string' que recibe como parametro, con el tipo de mensaje especificado
+        en 'message_type'.
+
+        Args:
+            string (str): Mensaje a mostrar.
+            message_type (int): Tipo de mensaje. Este puede ser normal o de error. Corresponde
+            a las constantes DEFAULT_MESSAGE y ERROR_MESSAGE respectivamente. Un ERROR_MESSAGE
+            se muestra de color rojo.
+        """
         self.message_label.setText(string)
         if message_type == self.DEFAULT_MESSAGE:
             self.message_label.setStyleSheet("font-size: 13px; color: #BDBDBD;")
