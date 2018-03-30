@@ -187,7 +187,8 @@ class InformationLabel(QWidget):
         self.icon_label.setPixmap(self.get_icon_pixmap(message_type))
         self.msg_label.setText(string)
 
-    def get_icon_pixmap(self, message_type: MessageType) -> QPixmap:
+    @staticmethod
+    def get_icon_pixmap(message_type: MessageType) -> QPixmap:
         """Obtiene el QPixmap del icono que representa el tipo de mensaje.
 
         Args:
