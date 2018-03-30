@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QHBoxLayout, QTextEdit
 from PyQt5.QtGui import QPixmap, QIcon
 from Settings import Settings
 from OptionsDialog import OptionsDialog
-from GuiTools import StatusPanel
+from GuiTools import StatusPanel, MessageType
 
 class MainWindow(QMainWindow):
 
@@ -68,5 +68,5 @@ class MainWindow(QMainWindow):
         if flag:
             self.text_log.verticalScrollBar().setValue(self.text_log.verticalScrollBar().maximum())
 
-    def set_sync_state(self, string: str, message_type: int, status_panel: StatusPanel):
+    def set_sync_state(self, string: str, message_type: MessageType, status_panel: StatusPanel):
         status_panel.change_message(string, message_type)

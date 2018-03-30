@@ -8,14 +8,14 @@ from os import path
 from MainWindow import MainWindow
 from PyQt5.QtCore import pyqtSignal, QObject
 from PyQt5.QtWidgets import QWidget
-from GuiTools import InformationLabel, StatusPanel
+from GuiTools import MessageType, StatusPanel
 from Settings import Settings
 from RequestsHandler import RequestsHandler, RequestsHandlerException, GeneralConnectionError
 
 class SyncThread(QObject, Thread):
 
     log_signal = pyqtSignal(str)
-    changed_sync_state_signal = pyqtSignal(str, int, StatusPanel)
+    changed_sync_state_signal = pyqtSignal(str, MessageType, StatusPanel)
     runThread = True
 
     sync_messages = {
@@ -45,14 +45,14 @@ class SyncThread(QObject, Thread):
             self.log_signal.emit("La sincronización de 'Socios y Ahorros' está desactivada.")
             self.changed_sync_state_signal.emit(
                 self.sync_messages["disable_sync"],
-                InformationLabel.WARNING,
+                MessageType.WARNING,
                 self.window.socios_panel
             )
         if not Settings.prestamos_file["enabled"]:
             self.log_signal.emit("La sincronización de 'Préstamos' está desactivada.")
             self.changed_sync_state_signal.emit(
                 self.sync_messages["disable_sync"],
-                InformationLabel.WARNING,
+                MessageType.WARNING,
                 self.window.prestamos_panel
             )
         self.__change_last_sync(Settings.socios_file, self.window.socios_panel)
@@ -82,7 +82,7 @@ class SyncThread(QObject, Thread):
                 )
                 self.changed_sync_state_signal.emit(
                     self.sync_messages["file_not_found"],
-                    InformationLabel.ERROR,
+                    MessageType.ERROR,
                     panel
                 )
                 self.flag[file_info["name"]] = True
@@ -102,7 +102,7 @@ class SyncThread(QObject, Thread):
                     )
                     self.changed_sync_state_signal.emit(
                         self.sync_messages["invalid_file_integrity"],
-                        InformationLabel.ERROR,
+                        MessageType.ERROR,
                         panel
                     )
                     self.flag[file_info["name"]] = True
@@ -117,7 +117,7 @@ class SyncThread(QObject, Thread):
             self.log_signal.emit("No se pudo acceder al servidor.")
             self.changed_sync_state_signal(
                 self.sync_messages["connection_error"],
-                InformationLabel.ERROR,
+                MessageType.ERROR,
                 panel
             )
             self.flag[file_info["name"]] = True
@@ -127,7 +127,7 @@ class SyncThread(QObject, Thread):
             self.log_signal.emit(exception.message)
             self.changed_sync_state_signal(
                 self.sync_messages["request_error"],
-                InformationLabel.ERROR,
+                MessageType.ERROR,
                 panel
             )
             self.flag[file_info["name"]] = True
@@ -140,7 +140,7 @@ class SyncThread(QObject, Thread):
         )
         self.changed_sync_state_signal.emit(
             self.sync_messages["all_ok"],
-            InformationLabel.SUCCESS,
+            MessageType.SUCCESS,
             panel
         )
         file_info["last_sync"] = datetime.now().strftime("%H:%M %d-%m-%Y")
@@ -169,7 +169,7 @@ class SyncThread(QObject, Thread):
     def __change_last_sync(self, file_info: dict, panel: QWidget):
         self.changed_sync_state_signal.emit(
             file_info["last_sync"],
-            InformationLabel.DATE,
+            MessageType.DATE,
             panel
         )
 
