@@ -15,7 +15,7 @@ from RequestsHandler import RequestsHandler, RequestsHandlerException, GeneralCo
 class SyncThread(QObject, Thread):
 
     log_signal = pyqtSignal(str)
-    changed_sync_state_signal = pyqtSignal(str, MessageType, StatusPanel)
+    sync_state_signal = pyqtSignal(str, MessageType, StatusPanel)
     runThread = True
 
     sync_messages = {
@@ -36,21 +36,21 @@ class SyncThread(QObject, Thread):
 
     def __make_connections(self):
         self.log_signal.connect(self.window.print_log)
-        self.changed_sync_state_signal.connect(self.window.set_sync_state)
+        self.sync_state_signal.connect(self.window.set_sync_state)
 
     def run(self):
         self.log_signal.emit("Inicializando...")
         self.log_signal.emit("Leyendo configuracion...")
         if not Settings.socios_file["enabled"]:
             self.log_signal.emit("La sincronización de 'Socios y Ahorros' está desactivada.")
-            self.changed_sync_state_signal.emit(
+            self.sync_state_signal.emit(
                 self.sync_messages["disable_sync"],
                 MessageType.WARNING,
                 self.window.socios_panel
             )
         if not Settings.prestamos_file["enabled"]:
             self.log_signal.emit("La sincronización de 'Préstamos' está desactivada.")
-            self.changed_sync_state_signal.emit(
+            self.sync_state_signal.emit(
                 self.sync_messages["disable_sync"],
                 MessageType.WARNING,
                 self.window.prestamos_panel
@@ -80,7 +80,7 @@ class SyncThread(QObject, Thread):
                         file_info["file_path"]
                     )
                 )
-                self.changed_sync_state_signal.emit(
+                self.sync_state_signal.emit(
                     self.sync_messages["file_not_found"],
                     MessageType.ERROR,
                     panel
@@ -100,7 +100,7 @@ class SyncThread(QObject, Thread):
                         Pueden faltar campos o valores. Por favor verificar \
                         el contenido de este.'.format(file_info["name"])
                     )
-                    self.changed_sync_state_signal.emit(
+                    self.sync_state_signal.emit(
                         self.sync_messages["invalid_file_integrity"],
                         MessageType.ERROR,
                         panel
@@ -115,7 +115,7 @@ class SyncThread(QObject, Thread):
             RequestsHandler.send_data_to_api(data_http, file_info["resource_path"])
         except GeneralConnectionError as exception:
             self.log_signal.emit("No se pudo acceder al servidor.")
-            self.changed_sync_state_signal(
+            self.sync_state_signal.emit(
                 self.sync_messages["connection_error"],
                 MessageType.ERROR,
                 panel
@@ -125,7 +125,7 @@ class SyncThread(QObject, Thread):
         except RequestsHandlerException as exception:
             self.log_signal.emit("Ocurrió un error en el envio de información.")
             self.log_signal.emit(exception.message)
-            self.changed_sync_state_signal(
+            self.sync_state_signal.emit(
                 self.sync_messages["request_error"],
                 MessageType.ERROR,
                 panel
@@ -138,7 +138,7 @@ class SyncThread(QObject, Thread):
         self.log_signal.emit(
             "Archivo<strong> {} </strong>sincronizado correctamente.".format(file_info["name"])
         )
-        self.changed_sync_state_signal.emit(
+        self.sync_state_signal.emit(
             self.sync_messages["all_ok"],
             MessageType.SUCCESS,
             panel
@@ -167,7 +167,7 @@ class SyncThread(QObject, Thread):
         return True
 
     def __change_last_sync(self, file_info: dict, panel: QWidget):
-        self.changed_sync_state_signal.emit(
+        self.sync_state_signal.emit(
             file_info["last_sync"],
             MessageType.DATE,
             panel
@@ -184,3 +184,14 @@ class SyncThread(QObject, Thread):
                 indent=4,
                 separators=(',', ': ')
             ))
+    
+    @staticmethod
+    def set_sync_state(string: str, message_type: MessageType, status_panel: StatusPanel):
+        """Slot que cambia el estado de sincronización en el StatusPanel indicado por parámetro.
+
+        Args:
+            string (str): Mensaje a mostrar.
+            message_type (MessageType): Tipo de mensaje.
+            status_panel (StatusPanel): Panel al que se le asignará el mensaje.
+        """
+        status_panel.change_message(string, message_type)

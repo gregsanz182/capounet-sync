@@ -21,7 +21,7 @@ class AccessDialog(QDialog):
 
     Note:
         La configuración de la aplicación debe haber sido cargada previamente. Para esto llamar
-        a Settings.load_settings()
+        a Settings.load_settings().
 
     Attributes:
         layout (QVBoxLayout): Layout que contendrá los widgets de este QDialog.

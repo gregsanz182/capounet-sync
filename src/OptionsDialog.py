@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Este módulo provee un Dialog para representar las diferentes opciones de la aplicación."""
 
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QCheckBox, QLabel, QLineEdit, QPushButton
