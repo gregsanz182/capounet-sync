@@ -2,8 +2,8 @@
 """Este módulo contiene la ventana principal del programa."""
 
 from datetime import datetime
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLabel, QWidget, QPushButton
-from PyQt5.QtWidgets import QHBoxLayout, QTextEdit
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLabel, QWidget, QPushButton, QMenu
+from PyQt5.QtWidgets import QHBoxLayout, QTextEdit, QSystemTrayIcon, QStyle, QAction, qApp
 from PyQt5.QtGui import QPixmap, QIcon
 from Settings import Settings
 from OptionsDialog import OptionsDialog
@@ -54,7 +54,7 @@ class MainWindow(QMainWindow):
         """
         central_widget = QWidget()
         central_widget.setStyleSheet(Settings.global_style)
-        self.setCentralWidget(self.central_widget)
+        self.setCentralWidget(central_widget)
         self.layout = QVBoxLayout(central_widget)
 
         self.top_layout = QHBoxLayout()
@@ -67,7 +67,7 @@ class MainWindow(QMainWindow):
         self.config_button.setStyleSheet("color: #B6B6B6; font-size: 12px;")
         self.config_button.setIcon(QIcon("res/cog.png"))
         self.top_layout.addSpacing(5)
-        self.top_layout.addWidget(self.logo_label)
+        self.top_layout.addWidget(logo_label)
         self.top_layout.addStretch()
         self.top_layout.addWidget(self.config_button)
 
@@ -83,6 +83,21 @@ class MainWindow(QMainWindow):
         self.text_log = QTextEdit()
         self.text_log.setReadOnly(True)
         self.layout.addWidget(self.text_log)
+
+        self.tray_icon = QSystemTrayIcon(self)
+        self.tray_icon.setIcon(self.style().standardIcon(QStyle.SP_ComputerIcon))
+        show_action = QAction("Mostrar", self)
+        quit_action = QAction("Salir", self)
+        hide_action = QAction("Esconder", self)
+        show_action.triggered.connect(self.show)
+        hide_action.triggered.connect(self.hide)
+        quit_action.triggered.connect(qApp.quit)
+        tray_menu = QMenu()
+        tray_menu.addAction(show_action)
+        tray_menu.addAction(hide_action)
+        tray_menu.addAction(quit_action)
+        self.tray_icon.setContextMenu(tray_menu)
+        self.tray_icon.show()
 
         self.config_button.clicked.connect(self.open_options)
 
@@ -109,3 +124,13 @@ class MainWindow(QMainWindow):
         ))
         if flag:
             self.text_log.verticalScrollBar().setValue(self.text_log.verticalScrollBar().maximum())
+
+    def closeEvent(self, event):
+        event.ignore()
+        self.hide()
+        self.tray_icon.showMessage(
+            "Tray Program",
+            "Application was minimized to Tray",
+            QSystemTrayIcon.Information,
+            2000
+        )
