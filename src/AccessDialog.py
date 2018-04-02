@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Este módulo incluye AccessDialog, un QDialog para el manejo de las credenciales de usuario.
 
-AccessDialog pregunta las credenciales de usuario y obtiene los tokens de acceso y de refresco
+El AccessDialog pregunta las credenciales de usuario y obtiene los tokens de acceso y de refresco
 necesarios para la el manejo de la API rest.
 """
 
@@ -104,16 +104,16 @@ class AccessDialog(QDialog):
         self.accept_button.clicked.connect(self.__send_request)
 
     @staticmethod
-    def obtain_configuration() -> bool:
+    def obtain_configuration() -> int:
         """Abre un AccessDialog para su uso rápido.
 
         Crea un objeto instancia de AccessDialog y a la vez abre el Dialog.
 
         Note:
-            Puede ser llamado sin necesidad de instancia un objeto previamente.
+            Puede ser llamado sin necesidad de instanciar un objeto previamente.
 
         Returns:
-            bool: True si la obtención de los tokens fue exitosa, False si se canceló el dialog
+            int: 1 si la obtención de los tokens fue exitosa, 0 si se canceló el dialog
                 (Por medio del botón 'Salir' de la ventana).
         """
         dialog = AccessDialog()
