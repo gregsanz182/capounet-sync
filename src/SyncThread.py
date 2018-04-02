@@ -10,22 +10,27 @@ from PyQt5.QtCore import pyqtSignal, QObject
 from PyQt5.QtWidgets import QWidget
 from GuiTools import MessageType, StatusPanel
 from Settings import Settings
-from RequestsHandler import RequestsHandler, RequestsHandlerException, GeneralConnectionError
+from RequestsHandler import RequestsHandler, RequestsHandlerException
 
 class SyncThread(QObject, Thread):
 
     log_signal = pyqtSignal(str)
     sync_state_signal = pyqtSignal(str, MessageType, StatusPanel)
-    runThread = True
+    run_thread = True
+
+    ALL_OK = 230
+    DISABLED_SYNC = 231
+    FILE_NOT_FOUND = 232
+    INVALID_FILE_INTEGRITY = 233
+    REQUEST_ERROR = 234
 
     sync_messages = {
-        "disable_sync": "La sincronización se encuentra deshabilitada. \
+        DISABLED_SYNC: "La sincronización se encuentra deshabilitada. \
                         <br>Habilitar en <strong>Ajustes</strong>.",
-        "file_not_found": "No se encuentra el archivo.",
-        "invalid_file_integrity": "Fallo en la integridad del archivo.",
-        "connection_error": "Error en la conexión.",
-        "request_error": "Error en el envio de información.",
-        "all_ok": "Todo funciona correctamente."
+        FILE_NOT_FOUND: "No se encuentra el archivo.",
+        INVALID_FILE_INTEGRITY: "Fallo en la integridad del archivo.",
+        REQUEST_ERROR: "Error en el envio de información.",
+        ALL_OK: "Todo funciona correctamente."
     }
 
     def __init__(self, mainWindow: MainWindow):
@@ -41,23 +46,9 @@ class SyncThread(QObject, Thread):
     def run(self):
         self.log_signal.emit("Inicializando...")
         self.log_signal.emit("Leyendo configuracion...")
-        if not Settings.socios_file["enabled"]:
-            self.log_signal.emit("La sincronización de 'Socios y Ahorros' está desactivada.")
-            self.sync_state_signal.emit(
-                self.sync_messages["disable_sync"],
-                MessageType.WARNING,
-                self.window.socios_panel
-            )
-        if not Settings.prestamos_file["enabled"]:
-            self.log_signal.emit("La sincronización de 'Préstamos' está desactivada.")
-            self.sync_state_signal.emit(
-                self.sync_messages["disable_sync"],
-                MessageType.WARNING,
-                self.window.prestamos_panel
-            )
         self.__change_last_sync(Settings.socios_file, self.window.socios_panel)
         self.__change_last_sync(Settings.prestamos_file, self.window.prestamos_panel)
-        while self.runThread:
+        while self.run_thread:
             flag1 = self.__sync_file(Settings.socios_file, self.window.socios_panel)
             flag2 = False
             #self.__sync_file(Settings.prestamos_file, self.window.prestamos_panel)
@@ -68,12 +59,22 @@ class SyncThread(QObject, Thread):
 
     def __sync_file(self, file_info: dict, panel: QWidget):
         if not file_info["enabled"]:
+            if self.flag.get(file_info["name"]) != self.DISABLED_SYNC:
+                self.log_signal.emit(
+                    'La sincronización de "{}" está desactivada.'.format(file_info['name'])
+                )
+                self.sync_state_signal.emit(
+                    self.sync_messages[self.DISABLED_SYNC],
+                    MessageType.WARNING,
+                    panel
+                )
+                self.flag[file_info["name"]] = self.DISABLED_SYNC
             return False
 
         if not path.isfile(file_info["file_path"]) \
             or not path.exists(file_info["file_path"]) \
             or not file_info["file_path"].lower().endswith(".csv"):
-            if not self.flag.get(file_info["name"]):
+            if self.flag.get(file_info["name"]) != self.FILE_NOT_FOUND:
                 self.log_signal.emit(
                     'El archivo "{}" no es una ruta válida. \
                     Por favor, verificar en <strong>Ajustes.</strong>'.format(
@@ -81,11 +82,11 @@ class SyncThread(QObject, Thread):
                     )
                 )
                 self.sync_state_signal.emit(
-                    self.sync_messages["file_not_found"],
+                    self.sync_messages[self.FILE_NOT_FOUND],
                     MessageType.ERROR,
                     panel
                 )
-                self.flag[file_info["name"]] = True
+                self.flag[file_info["name"]] = self.FILE_NOT_FOUND
             return False
 
         if file_info["hash"] == self.get_file_hash(file_info["file_path"]):
@@ -94,18 +95,18 @@ class SyncThread(QObject, Thread):
         with open(file_info["file_path"], newline='') as csvfile:
             data = list(csv.DictReader(csvfile))
             if not self.check_csv_integrity(data, file_info["fields"]):
-                if not self.flag.get(file_info["name"]):
+                if self.flag.get(file_info["name"]) != self.INVALID_FILE_INTEGRITY:
                     self.log_signal.emit(
                         'La integridad del CSV <strong>"{}"</strong> es inválida. \
                         Pueden faltar campos o valores. Por favor verificar \
                         el contenido de este.'.format(file_info["name"])
                     )
                     self.sync_state_signal.emit(
-                        self.sync_messages["invalid_file_integrity"],
+                        self.sync_messages[self.INVALID_FILE_INTEGRITY],
                         MessageType.ERROR,
                         panel
                     )
-                    self.flag[file_info["name"]] = True
+                    self.flag[file_info["name"]] = self.INVALID_FILE_INTEGRITY
                 return False
 
         data_http = {
@@ -113,33 +114,24 @@ class SyncThread(QObject, Thread):
         }
         try:
             RequestsHandler.send_data_to_api(data_http, file_info["resource_path"])
-        except GeneralConnectionError as exception:
-            self.log_signal.emit("No se pudo acceder al servidor.")
-            self.sync_state_signal.emit(
-                self.sync_messages["connection_error"],
-                MessageType.ERROR,
-                panel
-            )
-            self.flag[file_info["name"]] = True
-            return
         except RequestsHandlerException as exception:
-            self.log_signal.emit("Ocurrió un error en el envio de información.")
-            self.log_signal.emit(exception.message)
-            self.sync_state_signal.emit(
-                self.sync_messages["request_error"],
-                MessageType.ERROR,
-                panel
-            )
-            self.flag[file_info["name"]] = True
+            if self.flag[file_info["name"]] != exception.code:
+                self.log_signal.emit(exception.message)
+                self.sync_state_signal.emit(
+                    self.sync_messages[self.REQUEST_ERROR],
+                    MessageType.ERROR,
+                    panel
+                )
+                self.flag[file_info["name"]] = exception.code
             return
 
-        self.flag[file_info["name"]] = False
+        self.flag[file_info["name"]] = self.ALL_OK
         file_info["hash"] = self.get_file_hash(file_info["file_path"])
         self.log_signal.emit(
             "Archivo<strong> {} </strong>sincronizado correctamente.".format(file_info["name"])
         )
         self.sync_state_signal.emit(
-            self.sync_messages["all_ok"],
+            self.sync_messages[self.ALL_OK],
             MessageType.SUCCESS,
             panel
         )
@@ -147,7 +139,8 @@ class SyncThread(QObject, Thread):
         self.__change_last_sync(file_info, panel)
         return True
 
-    def get_file_hash(self, file_path: str) -> str:
+    @staticmethod
+    def get_file_hash(file_path: str) -> str:
         buffersize = 65536
 
         with open(file_path, 'rb') as afile:
@@ -159,7 +152,8 @@ class SyncThread(QObject, Thread):
 
         return hex(crcvalue)
 
-    def check_csv_integrity(self, data: list, fields: list):
+    @staticmethod
+    def check_csv_integrity(data: list, fields: list):
         for row in data:
             for field in fields:
                 if field[1] and not row.get(field[0]):
@@ -174,17 +168,18 @@ class SyncThread(QObject, Thread):
         )
 
     def stop_sync(self):
-        self.runThread = False
+        self.run_thread = False
 
-    def write_json(self, data, json_file):
-        with open(json_file, "w") as f:
-            f.write(json.dumps(
+    @staticmethod
+    def write_json(data, json_file):
+        with open(json_file, "w") as jfile:
+            jfile.write(json.dumps(
                 data,
                 sort_keys=False,
                 indent=4,
                 separators=(',', ': ')
             ))
-    
+
     @staticmethod
     def set_sync_state(string: str, message_type: MessageType, status_panel: StatusPanel):
         """Slot que cambia el estado de sincronización en el StatusPanel indicado por parámetro.

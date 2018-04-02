@@ -140,6 +140,7 @@ class RequestsHandlerException(Exception):
         super().__init__(message)
         self.message = message
         self.original_exception = original_exception
+        self.code = 21340
 
 class InvalidURL(RequestsHandlerException):
     """Define una excepción de URL inválida.
@@ -151,6 +152,7 @@ class InvalidURL(RequestsHandlerException):
             original_exception: Excepción original que causó el llamado de esta excepción.
         """
         super().__init__("La URL del dominio no es válida.", original_exception)
+        self.code = 21341
 
 class InternalServerError(RequestsHandlerException):
     """Define una excepción de Error interno del servidor.
@@ -162,6 +164,7 @@ class InternalServerError(RequestsHandlerException):
             original_exception: Excepción original que causó el llamado de esta excepción.
         """
         super().__init__("Error interno del servidor (500)", original_exception)
+        self.code = 21342
 
 class RequestError(RequestsHandlerException):
     """Define una excepción de error en la petición.
@@ -176,6 +179,7 @@ class RequestError(RequestsHandlerException):
         super().__init__(
             "Ocurrió un error en la petición.\nCódigo HTTP: {}".format(http_code),
             original_exception)
+        self.code = 21343
 
 class InvalidAuthentication(RequestsHandlerException):
     """Define una excepción de autenticación inválida.
@@ -187,6 +191,7 @@ class InvalidAuthentication(RequestsHandlerException):
             original_exception: Excepción original que causó el llamado de esta excepción.
         """
         super().__init__("Credenciales incorrectas.", original_exception)
+        self.code = 21344
 
 class MissingSchema(RequestsHandlerException):
     """Define una excepción URL sin http:// o https://.
@@ -200,6 +205,7 @@ class MissingSchema(RequestsHandlerException):
         super().__init__(
             "El dominio no es valido.\nVerifica que incluya 'http://' o 'https://'",
             original_exception)
+        self.code = 21345
 
 class GeneralConnectionError(RequestsHandlerException):
     """Define una excepción de error en la conexión.
@@ -213,3 +219,4 @@ class GeneralConnectionError(RequestsHandlerException):
         super().__init__(
             "Error en la conexión.\nVerifica que exista conexión a internet y vuelve a intentarlo.",
             original_exception)
+        self.code = 21346
