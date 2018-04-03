@@ -13,7 +13,7 @@ options = {
 }
 
 executables = [
-    Executable('src/main.py', base=base)
+    Executable('src/main.py', base=base, icon="res/icons/app_icon.ico")
 ]
 
 setup(

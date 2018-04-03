@@ -86,7 +86,7 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.text_log)
 
         self.tray_icon = QSystemTrayIcon(self)
-        self.tray_icon.setIcon(self.style().standardIcon(QStyle.SP_ComputerIcon))
+        self.tray_icon.setIcon(Settings.sync_icon)
         show_action = QAction("Mostrar", self)
         quit_action = QAction("Salir", self)
         show_action.triggered.connect(self.show)

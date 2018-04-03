@@ -16,6 +16,7 @@ def main():
         QCoreApplication.setOrganizationName("CAPOOUNET")
         QCoreApplication.setOrganizationDomain("capounet.unet.edu.ve")
         Settings.load_settings(2, "8jwf7A0DbakpJ7p4HKCPJXJogwGFyWPkDLsDYngx")
+        main_app.setWindowIcon(Settings.app_icon)
         return_code = 1
 
         if not Settings.is_init():

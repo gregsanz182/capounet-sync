@@ -2,6 +2,7 @@
 """Este módulo proporciona una clase para el manejo de las configuraciones del programa."""
 
 from PyQt5.QtCore import QSettings
+from PyQt5.QtGui import QIcon
 from cryptography.fernet import Fernet
 
 class Settings():
@@ -110,6 +111,9 @@ class Settings():
             min-height: 25px;
         }
     """
+    app_icon = None
+    sync_icon = None
+    sync_error_icon = None
 
     @classmethod
     def save_settings(cls):
@@ -209,6 +213,10 @@ class Settings():
             cls.prestamos_file["hash"] = cls.qsettings_files.value("prestamos/hash")
             cls.prestamos_file["last_sync"] = cls.qsettings_files.value("prestamos/last_sync")
         cls.domain = cls.qsettings.value("urls/domain")
+
+        cls.app_icon = QIcon("res/icons/app_icon.ico")
+        cls.sync_icon = QIcon("res/icons/sync_icon.ico")
+        cls.sync_error_icon = QIcon("res/icons/sync_error_icon.ico")
 
     @classmethod
     def __get_setting(cls, setting: str) -> str:
