@@ -58,7 +58,7 @@ class AccessDialog(QDialog):
         #Atributos del dialogo
         self.setWindowTitle("Conceder permisos")
         self.setFixedWidth(320)
-        self.setFixedHeight(440)
+        self.setFixedHeight(465)
         self.setStyleSheet(Settings.global_style)
 
         #Asignación del QLayout contenedor
