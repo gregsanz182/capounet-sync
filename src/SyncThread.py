@@ -41,7 +41,7 @@ class SyncThread(QObject, Thread):
 
     def __make_connections(self):
         self.log_signal.connect(self.window.print_log)
-        self.sync_state_signal.connect(self.window.set_sync_state)
+        self.sync_state_signal.connect(self.set_sync_state)
 
     def run(self):
         self.log_signal.emit("Inicializando...")
@@ -55,7 +55,7 @@ class SyncThread(QObject, Thread):
             if flag1 or flag2:
                 Settings.save_files_hash()
 
-            time.sleep(20)
+            time.sleep(5)
 
     def __sync_file(self, file_info: dict, panel: QWidget):
         if not file_info["enabled"]:

@@ -4,6 +4,7 @@
 from datetime import datetime
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLabel, QWidget, QPushButton, QMenu
 from PyQt5.QtWidgets import QHBoxLayout, QTextEdit, QSystemTrayIcon, QStyle, QAction, qApp
+from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtGui import QPixmap, QIcon
 from Settings import Settings
 from OptionsDialog import OptionsDialog
@@ -88,13 +89,10 @@ class MainWindow(QMainWindow):
         self.tray_icon.setIcon(self.style().standardIcon(QStyle.SP_ComputerIcon))
         show_action = QAction("Mostrar", self)
         quit_action = QAction("Salir", self)
-        hide_action = QAction("Esconder", self)
         show_action.triggered.connect(self.show)
-        hide_action.triggered.connect(self.hide)
-        quit_action.triggered.connect(qApp.quit)
+        quit_action.triggered.connect(self.closeApp)
         tray_menu = QMenu()
         tray_menu.addAction(show_action)
-        tray_menu.addAction(hide_action)
         tray_menu.addAction(quit_action)
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.show()
@@ -128,9 +126,10 @@ class MainWindow(QMainWindow):
     def closeEvent(self, event):
         event.ignore()
         self.hide()
-        self.tray_icon.showMessage(
-            "Tray Program",
-            "Application was minimized to Tray",
-            QSystemTrayIcon.Information,
-            2000
-        )
+
+    def closeApp(self):
+        response = QMessageBox.question(self, "¿Deseas salir?", "¿Realmente deseas salir?")
+        if response == QMessageBox.Yes:
+            self.tray_icon.hide()
+            qApp.quit()
+        return
