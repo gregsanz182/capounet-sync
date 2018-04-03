@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtGui import QPixmap, QIcon
 from Settings import Settings
 from OptionsDialog import OptionsDialog
-from GuiTools import StatusPanel
+from GuiTools import StatusPanel, QuestionDialog
 
 class MainWindow(QMainWindow):
     """Ventana principal de la aplicación.
@@ -96,6 +96,7 @@ class MainWindow(QMainWindow):
         tray_menu.addAction(quit_action)
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.show()
+        self.tray_icon.activated.connect(self.show_now)
 
         self.config_button.clicked.connect(self.open_options)
 
@@ -127,9 +128,13 @@ class MainWindow(QMainWindow):
         event.ignore()
         self.hide()
 
+    def show_now(self, reason: QSystemTrayIcon.ActivationReason):
+        if reason == QSystemTrayIcon.DoubleClick:
+            self.show()
+
     def closeApp(self):
-        response = QMessageBox.question(self, "¿Deseas salir?", "¿Realmente deseas salir?")
-        if response == QMessageBox.Yes:
+        response = QuestionDialog.open_question("¿Deseas salir?", "¿Realmente deseas salir?", self)
+        if response == QMessageBox.Accepted:
             self.tray_icon.hide()
             qApp.quit()
         return

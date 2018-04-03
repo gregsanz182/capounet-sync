@@ -2,7 +2,8 @@
 """Este módulo incluye diferentes QWidgets y QLayouts personalizados para el uso en la aplicación"""
 
 from enum import Enum
-from PyQt5.QtWidgets import QHBoxLayout, QLabel, QWidget, QFrame, QVBoxLayout
+from PyQt5.QtWidgets import QHBoxLayout, QLabel, QWidget, QFrame, QVBoxLayout, QMessageBox
+from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QPixmap
 
@@ -207,3 +208,24 @@ class InformationLabel(QWidget):
             return QPixmap("res/date_icon.png")
         elif message_type == MessageType.DISABLE:
             return QPixmap()
+
+class QuestionDialog(QMessageBox):
+
+    def __init__(self, title: str, text: str, parent: QWidget = None):
+        super().__init__(parent)
+        self.setWindowTitle(title)
+        self.setText(text)
+
+        yes_button = QPushButton("Sí")
+        yes_button.setFixedWidth(100)
+        no_button = QPushButton("No")
+        no_button.setFixedWidth(100)
+        self.addButton(no_button, QMessageBox.NoRole)
+        self.addButton(yes_button, QMessageBox.YesRole)
+        self.setDefaultButton(no_button)
+        self.setIcon(QMessageBox.Question)
+
+    @staticmethod
+    def open_question(title: str, text: str, parent: QWidget = None):
+        dialog = QuestionDialog(title, text, parent)
+        return dialog.exec_()
