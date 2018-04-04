@@ -5,7 +5,7 @@ El AccessDialog pregunta las credenciales de usuario y obtiene los tokens de acc
 necesarios para la el manejo de la API rest.
 """
 
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QWidget
+from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QWidget, QSizePolicy
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 from RequestsHandler import RequestsHandler, RequestsHandlerException
@@ -57,8 +57,8 @@ class AccessDialog(QDialog):
         """
         #Atributos del dialogo
         self.setWindowTitle("Conceder permisos")
+        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.setFixedWidth(320)
-        self.setFixedHeight(465)
         self.setStyleSheet(Settings.global_style)
 
         #Asignación del QLayout contenedor
@@ -100,6 +100,8 @@ class AccessDialog(QDialog):
         self.layout.addWidget(self.message_label)
         self.layout.addSpacing(10)
         self.layout.addWidget(self.accept_button)
+
+        self.setFixedSize(self.size())
 
         self.accept_button.clicked.connect(self.__send_request)
 

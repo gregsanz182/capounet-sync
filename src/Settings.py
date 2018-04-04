@@ -186,7 +186,7 @@ class Settings():
         """
         cls.client_id = client_id
         cls.client_secret = client_secret
-        config_path = QStandardPaths.standardLocations(QStandardPaths.ConfigLocation)[0]
+        config_path = QStandardPaths.standardLocations(QStandardPaths.DataLocation)[0]
         cls.qsettings = QSettings("{}/settings.ini".format(config_path), QSettings.IniFormat)
         cls.qsettings_files = QSettings("{}/files_info.ini".format(config_path), QSettings.IniFormat)
 
