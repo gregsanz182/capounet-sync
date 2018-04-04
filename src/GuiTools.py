@@ -86,7 +86,6 @@ class StatusPanel(QFrame):
         self.setStyleSheet("""
             QFrame{
                 background-color: #232629;
-                border: 1px solid #75787B;
             }
             QFrame#status_panel{
                 border: 1px solid #75787B;

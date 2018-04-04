@@ -135,7 +135,7 @@ class SyncThread(QObject, Thread):
             MessageType.SUCCESS,
             panel
         )
-        file_info["last_sync"] = datetime.now().strftime("%H:%M %d-%m-%Y")
+        file_info["last_sync"] = datetime.now().strftime("%d/%m/%Y %H:%M")
         self.__change_last_sync(file_info, panel)
         return True
 
