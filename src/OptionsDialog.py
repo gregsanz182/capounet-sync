@@ -123,6 +123,7 @@ class OptionsDialog(QDialog):
             self, "Selecciona archivo", filter="*.csv")[0]
         if file_path:
             self.socios_path.setText(file_path)
+            self.socios_check_box.setCheckState(Qt.Checked)
 
     def __select_prestamos_path(self):
         """Abre una ventana para seleccionar el archivo de "Prestamos".
@@ -146,11 +147,13 @@ class OptionsDialog(QDialog):
             clase.
         """
         Settings.socios_file.update({
-            "enabled": True if self.socios_check_box.checkState() == Qt.Checked else False,
+            "enabled": True if self.socios_check_box.checkState() == Qt.Checked \
+            and self.socios_path.text() else False,
             "file_path": self.socios_path.text()
         })
         Settings.prestamos_file.update({
-            "enabled": True if self.prestamos_check_box.checkState() == Qt.Checked else False,
+            "enabled": True if self.prestamos_check_box.checkState() == Qt.Checked \
+            and self.prestamos_path.text() else False,
             "file_path": self.prestamos_path.text()
         })
         Settings.save_settings()

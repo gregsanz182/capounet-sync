@@ -150,7 +150,6 @@ class AccessDialog(QDialog):
             Settings.access_token = data["access_token"]
             Settings.refresh_token = data["refresh_token"]
             Settings.access_token_expire = data["expires_in"]
-            Settings.save_settings()
             self.accept()
         except RequestsHandlerException as exception:
             self.print_message(exception.message, self.ERROR_MESSAGE)

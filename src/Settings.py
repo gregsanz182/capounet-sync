@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Este módulo proporciona una clase para el manejo de las configuraciones del programa."""
 
-from PyQt5.QtCore import QSettings
+from PyQt5.QtCore import QSettings, QStandardPaths
 from PyQt5.QtGui import QIcon
 from cryptography.fernet import Fernet
 
@@ -186,8 +186,9 @@ class Settings():
         """
         cls.client_id = client_id
         cls.client_secret = client_secret
-        cls.qsettings = QSettings("settings.ini", QSettings.IniFormat)
-        cls.qsettings_files = QSettings("files_info.ini", QSettings.IniFormat)
+        config_path = QStandardPaths.standardLocations(QStandardPaths.ConfigLocation)[0]
+        cls.qsettings = QSettings("{}/settings.ini".format(config_path), QSettings.IniFormat)
+        cls.qsettings_files = QSettings("{}/files_info.ini".format(config_path), QSettings.IniFormat)
 
         #Se instancia un objeto Fernet con el secreto de la aplicación
         fernet = Fernet(cls.__secret)

@@ -13,7 +13,7 @@ def main():
         main_app = QApplication(sys.argv)
         main_app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
         QCoreApplication.setApplicationName("CAPOUNET Sync")
-        QCoreApplication.setOrganizationName("CAPOOUNET")
+        QCoreApplication.setOrganizationName("CAPOUNET")
         QCoreApplication.setOrganizationDomain("capounet.unet.edu.ve")
         Settings.load_settings(2, "8jwf7A0DbakpJ7p4HKCPJXJogwGFyWPkDLsDYngx")
         main_app.setWindowIcon(Settings.app_icon)
