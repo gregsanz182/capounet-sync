@@ -74,7 +74,6 @@ class StatusPanel(QFrame):
         message_label (InformationLabel): Label encargado de mostrar un mensaje sobre el estado
             actual de la sincronización asi como también un mensaje de error o de emergencia.
     """
-
     def __init__(self, title: str, icon_path: str, parent: QWidget = None):
         """Constructor de la clase. Construye e inicializa una instancia de StatusPanel.
 
@@ -87,6 +86,7 @@ class StatusPanel(QFrame):
         self.setStyleSheet("""
             QFrame{
                 background-color: #232629;
+                border: 1px solid #75787B;
             }
             QFrame#status_panel{
                 border: 1px solid #75787B;
@@ -131,7 +131,7 @@ class StatusPanel(QFrame):
         if message_type == MessageType.DATE:
             #Si el tipo de mensaje es DATE se cambia el mensaje de last_sync_label
             self.last_sync_label.set_message(
-                "Última sincronización exitosa:\n{}".format(string),
+                "Última sincronización exitosa:<br>{}".format(string),
                 MessageType.DATE
             )
         else:
@@ -176,7 +176,6 @@ class InformationLabel(QWidget):
         self.layout.setAlignment(self.icon_label, Qt.AlignTop)
         self.layout.addSpacing(7)
         self.layout.addWidget(self.msg_label)
-        self.layout.addStretch()
 
     def set_message(self, string: str = "", message_type: MessageType = MessageType.SUCCESS):
         """Cambia el mensaje del InformationLabel

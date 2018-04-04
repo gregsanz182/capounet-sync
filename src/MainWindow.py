@@ -41,7 +41,7 @@ class MainWindow(QMainWindow):
         """
         super().__init__()
         self.setWindowTitle("CAPOUNET Sync")
-        self.setFixedWidth(450)
+        self.setFixedWidth(480)
         self.setFixedHeight(500)
 
         self.__init_components()
