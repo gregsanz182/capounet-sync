@@ -109,13 +109,10 @@ class SyncThread(QObject, Thread):
                     self.flag[file_info["name"]] = self.INVALID_FILE_INTEGRITY
                 return False
 
-        data_http = {
-            "data": json.dumps(data)
-        }
         try:
-            RequestsHandler.send_data_to_api(data_http, file_info["resource_path"])
+            RequestsHandler.send_data_to_api(data, file_info["resource_path"])
         except RequestsHandlerException as exception:
-            if self.flag[file_info["name"]] != exception.code:
+            if self.flag.get(file_info["name"]) != exception.code:
                 self.log_signal.emit(exception.message)
                 self.sync_state_signal.emit(
                     self.sync_messages[self.REQUEST_ERROR],
@@ -179,6 +176,11 @@ class SyncThread(QObject, Thread):
                 indent=4,
                 separators=(',', ': ')
             ))
+
+    @staticmethod
+    def write_html(data, html_file):
+        with open(html_file, "w") as jfile:
+            jfile.write(data)
 
     @staticmethod
     def set_sync_state(string: str, message_type: MessageType, status_panel: StatusPanel):

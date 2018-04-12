@@ -2,6 +2,7 @@
 """Este módulo proporciona métodos para en el envio de peticiones al servidor API restful."""
 
 import requests
+import json
 from Settings import Settings
 
 class RequestsHandler():
@@ -70,7 +71,7 @@ class RequestsHandler():
             if request.status_code == 401:
                 raise InvalidAuthentication()
             if request.status_code == 500:
-                raise InternalServerError()
+                raise InternalServerError(request)
             raise RequestError(request.status_code)
         except requests.exceptions.InvalidURL as exception:
             raise InvalidURL(exception)
@@ -110,8 +111,15 @@ class RequestsHandler():
         headers = {
             "Authorization": 'Bearer ' + Settings.access_token
         }
+        files = {
+            'data': (None, json.dumps(data), 'application/json')
+        }
         try:
-            request = requests.post(Settings.get_api_resource_url(url), headers=headers, data=data)
+            request = requests.post(
+                Settings.get_api_resource_url(url),
+                headers=headers,
+                files=files
+            )
             if request.status_code == 200:
                 return request.json()
             if request.status_code == 404:
@@ -119,7 +127,7 @@ class RequestsHandler():
             if request.status_code == 401:
                 raise InvalidAuthentication()
             if request.status_code == 500:
-                raise InternalServerError()
+                raise InternalServerError(request)
             raise RequestError(request.status_code)
         except requests.exceptions.InvalidURL as exception:
             raise InvalidURL(exception)
@@ -158,13 +166,14 @@ class InternalServerError(RequestsHandlerException):
     """Define una excepción de Error interno del servidor.
     """
 
-    def __init__(self, original_exception=None):
+    def __init__(self, request, original_exception=None):
         """
         Args:
             original_exception: Excepción original que causó el llamado de esta excepción.
         """
         super().__init__("Error interno del servidor (500)", original_exception)
         self.code = 21342
+        self.request = request
 
 class RequestError(RequestsHandlerException):
     """Define una excepción de error en la petición.

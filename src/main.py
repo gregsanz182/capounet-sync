@@ -15,20 +15,21 @@ def main():
         QCoreApplication.setApplicationName("CAPOUNET Sync")
         QCoreApplication.setOrganizationName("CAPOUNET")
         QCoreApplication.setOrganizationDomain("capounet.unet.edu.ve")
-        Settings.load_settings(2, "8jwf7A0DbakpJ7p4HKCPJXJogwGFyWPkDLsDYngx")
+        Settings.load_settings(2, "Pjmiv22vNXVPnwuqIb56jBTFxcuTaMXFQUnkdVqg")
         main_app.setWindowIcon(Settings.app_icon)
-        return_code = 1
+        return_code = 2
 
         if not Settings.is_init():
             return_code = AccessDialog.obtain_configuration()
             if return_code == 1:
                 return_code = OptionsDialog.open_dialog()
 
-        if return_code == 1:
+        if return_code >= 1:
             main_window = MainWindow()
-            main_window.show()
             sync_thread = SyncThread(main_window)
             sync_thread.start()
+            if return_code == 1:
+                main_window.show()
             main_app.exec_()
             sync_thread.stop_sync()
 

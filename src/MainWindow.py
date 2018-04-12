@@ -133,8 +133,9 @@ class MainWindow(QMainWindow):
             self.show()
 
     def closeApp(self):
+        self.show()
         response = QuestionDialog.open_question("¿Deseas salir?", "¿Realmente deseas salir?", self)
-        if response == QMessageBox.Accepted:
+        if response == 1:
             self.tray_icon.hide()
             qApp.quit()
         return
