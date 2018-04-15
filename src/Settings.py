@@ -95,16 +95,25 @@ class Settings():
             color: #BDBDBD;
         }
         QLineEdit{
-            font-size: 13px; 
+            font-size: 13px;
             height: 18px;
         }
         QPushButton#normal_button{
-            height: 25px; 
+            height: 25px;
             background-color: #232629;
         }
+        QPushButton#toolbar_button{
+            height: 20px;
+            background-color: #232629;
+            color: #B6B6B6;
+            font-size: 12px;
+        }
+        QPushButton::menu-indicator {
+            width: 0px;
+        }
         QPushButton#accept_button{
-            height: 25px; 
-            background-color: #3DAEE9; 
+            height: 25px;
+            background-color: #3DAEE9;
             border-color: #515962;
         }
         QComboBox QAbstractItemView::item {

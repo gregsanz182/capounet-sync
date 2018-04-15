@@ -58,52 +58,76 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central_widget)
         self.layout = QVBoxLayout(central_widget)
 
-        self.top_layout = QHBoxLayout()
-        self.layout.addLayout(self.top_layout)
-
+        top_layout = QHBoxLayout()
         logo_label = QLabel()
         logo_label.setPixmap(QPixmap("res/logo_2.png"))
-        self.config_button = QPushButton("Ajustes")
-        self.config_button.setObjectName("normal_button")
-        self.config_button.setStyleSheet("color: #B6B6B6; font-size: 12px;")
-        self.config_button.setIcon(QIcon("res/cog.png"))
-        self.top_layout.addSpacing(5)
-        self.top_layout.addWidget(logo_label)
-        self.top_layout.addStretch()
-        self.top_layout.addWidget(self.config_button)
+        config_button = QPushButton("Ajustes")
+        config_button.setObjectName("toolbar_button")
+        config_button.setIcon(QIcon("res/cog.png"))
+        help_button = QPushButton("Ayuda")
+        help_button.setObjectName("toolbar_button")
+        help_button.setIcon(QIcon("res/help.png"))
+        help_menu = QMenu()
+        logout_action = QAction("Cerrar sesión", self)
+        logout_action.setIcon(QIcon("res/logout.png"))
+        logout_action.triggered.connect(self.__log_out)
+        about_action = QAction("Acerca de", self)
+        help_menu.addAction(logout_action)
+        help_menu.addAction(about_action)
+        help_button.setMenu(help_menu)
+        top_layout.setContentsMargins(5, 6, 2, 6)
+        top_layout.addWidget(logo_label)
+        top_layout.addStretch()
+        top_layout.addWidget(config_button)
+        top_layout.addWidget(help_button)
 
-        self.middle_layout = QHBoxLayout()
-        self.layout.addLayout(self.middle_layout)
-
+        middle_layout = QHBoxLayout()
         self.socios_panel = StatusPanel("Socios y Ahorros", "res/wallet.png")
-        self.middle_layout.addWidget(self.socios_panel)
-
+        middle_layout.addWidget(self.socios_panel)
         self.prestamos_panel = StatusPanel("Préstamos", "res/dues.png")
-        self.middle_layout.addWidget(self.prestamos_panel)
+        middle_layout.addWidget(self.prestamos_panel)
 
         self.text_log = QTextEdit()
         self.text_log.setReadOnly(True)
+
+        self.layout.addLayout(top_layout)
+        self.layout.addLayout(middle_layout)
         self.layout.addWidget(self.text_log)
 
         self.tray_icon = QSystemTrayIcon(self)
         self.tray_icon.setIcon(Settings.sync_icon)
         show_action = QAction("Mostrar", self)
         quit_action = QAction("Salir", self)
+        config_action = QAction("Preferencias", self)
         show_action.triggered.connect(self.show)
+        config_action.triggered.connect(self.open_options)
         quit_action.triggered.connect(self.close_app)
         tray_menu = QMenu()
         tray_menu.addAction(show_action)
+        tray_menu.addAction(config_action)
         tray_menu.addAction(quit_action)
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.show()
         self.tray_icon.activated.connect(self.show_now)
 
-        self.config_button.clicked.connect(self.open_options)
+        config_button.clicked.connect(self.open_options)
 
     def open_options(self):
         """Abre el Dialog de opciones.
         """
+        self.show()
         OptionsDialog.open_dialog(self)
+
+    def __log_out(self):
+        response = QuestionDialog.open_question(
+            "¿Deas cerrar sesión?",
+            "¿Realmente deseas cerrar sesión?. La sincronización se detendrá.",
+            self
+        )
+        if response == 1:
+            self.tray_icon.hide()
+            self.hide()
+            qApp.exit(1)
 
     def print_log(self, string: str):
         """Imprime un mensaje en el log.
