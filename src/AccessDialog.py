@@ -71,7 +71,7 @@ class AccessDialog(QDialog):
         label_logo.setAlignment(Qt.AlignCenter)
 
         #QLineEdit para 'usuario', 'contraseña' y 'dominio'
-        self.domain_input = QLineEdit("http://capounet.test")
+        self.domain_input = QLineEdit("http://capounet.unet.edu.ve")
         self.username_input = QLineEdit()
         self.password_input = QLineEdit()
         self.password_input.setEchoMode(QLineEdit.Password)

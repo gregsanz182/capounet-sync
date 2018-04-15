@@ -9,29 +9,39 @@ from OptionsDialog import OptionsDialog
 from SyncThread import SyncThread
 
 def main():
+    client_id = 2
+    client_secret = "gRRtXhPq66g0MYeexMmA8N0hKVx04T0FAxqDehud"
     try:
         main_app = QApplication(sys.argv)
-        main_app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
         QCoreApplication.setApplicationName("CAPOUNET Sync")
         QCoreApplication.setOrganizationName("CAPOUNET")
         QCoreApplication.setOrganizationDomain("capounet.unet.edu.ve")
-        Settings.load_settings(2, "Pjmiv22vNXVPnwuqIb56jBTFxcuTaMXFQUnkdVqg")
+
+        Settings.load_settings(client_id, client_secret)
+        main_app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
         main_app.setWindowIcon(Settings.app_icon)
-        return_code = 2
 
-        if not Settings.is_init():
-            return_code = AccessDialog.obtain_configuration()
-            if return_code == 1:
-                return_code = OptionsDialog.open_dialog()
+        return_code = 1
+        while return_code:
+            return_code = 2
+            if not Settings.is_init():
+                return_code = AccessDialog.obtain_configuration()
+                if return_code == 1:
+                    return_code = OptionsDialog.open_dialog()
 
-        if return_code >= 1:
-            main_window = MainWindow()
-            sync_thread = SyncThread(main_window)
-            sync_thread.start()
-            if return_code == 1:
-                main_window.show()
-            main_app.exec_()
-            sync_thread.stop_sync()
+            if return_code >= 1:
+                main_window = MainWindow()
+                sync_thread = SyncThread(main_window)
+                sync_thread.start()
+                if return_code == 1:
+                    main_window.show()
+                return_code = main_app.exec_()
+                sync_thread.stop_sync()
+                main_window.close()
+                sync_thread.join()
+                if return_code:
+                    Settings.delete_settings()
+                    Settings.load_settings(client_id, client_secret)
 
         sys.exit(0)
 
@@ -42,18 +52,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-    
-
-    """with open('AHORROSWEB.CSV', newline='') as csvfile:
-        reader = list(csv.DictReader(csvfile))
-        auth_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjgxMzRkNDlkOGQ4MGExNTBjY2U2NzE4Y2Y1OTk2NDVhZTFkNGE2NWU5NjhjZTVlYjE2MmRhMDUzNDc3OTE0MzI2ZTY0YjcxMDlkOTM2Y2I1In0.eyJhdWQiOiIyIiwianRpIjoiODEzNGQ0OWQ4ZDgwYTE1MGNjZTY3MThjZjU5OTY0NWFlMWQ0YTY1ZTk2OGNlNWViMTYyZGEwNTM0Nzc5MTQzMjZlNjRiNzEwOWQ5MzZjYjUiLCJpYXQiOjE1MjE4NTA2OTAsIm5iZiI6MTUyMTg1MDY5MCwiZXhwIjoxNTUzMzg2Njg5LCJzdWIiOiIxIiwic2NvcGVzIjpbIioiXX0.NKveH4zOhrzRIlIEQ-flktRzkVvxnCy7zplhCtALhWTC-aFFGbVMhzLfQIRQehi_7DkTeSQwG4pl7zcLKpt4k1qbnRROGlKDMFEFyfGeORlDyCiTTe3CSLxXdHmkf9fhYrERXSyZFuF91qxwSEU6SWdoSn-s0SdiLs53_O1fiaZbP-37GpIHW7HOhmQ83y26pm9WNXdKGIEjaI5WF77yf8b6Fz2yoUtRs8W51Bv9IOAwwfTd3l6VTnV9G7Bo8LVYn7PeVxqES2yMVjG9iXWNsuM4Mr5Lq7rhZDq2VIWLt8yNzAJQHyiZ1-pk0rcz4xbgijdYMtN3yvfk4kuvHNOdw1vrRLaUMbARLHGgZXpLp2aCPBpg8OXDQFBG6z-KWeL0cT7t5rbWUMv22sM5WK_p1zLA6aGY6sI5bMhxa1MK5Nbw6cdjMVo9vMKYGe4ua7isct29uY9nfhCppWSbAo2ZTFkKg0PAt53XW0v50XultvZhCmgk3YukXlcEK58-JXnsoRJ7KoXFDLh77801BPrHIvJ0eqzAKydQnnCzfzd0Dw5g2wiOc8uRukm8wmrjbdUuWhh1tb85wecYpTUZaBQXd7wElXzapoPkVNpu15cZVp6BDEcyA_wcb1xR8D_Dauj7yynOlsbnwul_MuHppZwMF2r0dkEnwKdMmUl89F903Ig"
-        headers = {
-            "Authorization": 'Bearer ' + auth_token
-        }
-        data = {
-            "socios": json.dumps(reader)
-        }
-        r = requests.post("http://capounet.test/api/socios/update", headers=headers, data=data)
-        print(r)"""
-    

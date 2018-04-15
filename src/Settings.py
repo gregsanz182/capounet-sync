@@ -273,3 +273,9 @@ class Settings():
         cls.qsettings_files.setValue("socios/last_sync", cls.socios_file["last_sync"])
         cls.qsettings_files.setValue("prestamos/last_sync", cls.prestamos_file["last_sync"])
         cls.qsettings_files.sync()
+
+    @classmethod
+    def delete_settings(cls):
+        cls.access_token = ""
+        cls.refresh_token = ""
+        cls.qsettings.clear()

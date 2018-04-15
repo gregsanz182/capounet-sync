@@ -90,7 +90,7 @@ class MainWindow(QMainWindow):
         show_action = QAction("Mostrar", self)
         quit_action = QAction("Salir", self)
         show_action.triggered.connect(self.show)
-        quit_action.triggered.connect(self.closeApp)
+        quit_action.triggered.connect(self.close_app)
         tray_menu = QMenu()
         tray_menu.addAction(show_action)
         tray_menu.addAction(quit_action)
@@ -132,7 +132,7 @@ class MainWindow(QMainWindow):
         if reason == QSystemTrayIcon.DoubleClick:
             self.show()
 
-    def closeApp(self):
+    def close_app(self):
         self.show()
         response = QuestionDialog.open_question("¿Deseas salir?", "¿Realmente deseas salir?", self)
         if response == 1:

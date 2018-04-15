@@ -2,11 +2,11 @@
 """Este módulo provee un Dialog para representar las diferentes opciones de la aplicación."""
 
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QCheckBox, QLabel, QLineEdit, QPushButton
-from PyQt5.QtWidgets import QFileDialog, QWidget
+from PyQt5.QtWidgets import QFileDialog, QWidget, QToolButton, qApp
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 from Settings import Settings
-from GuiTools import HLayout
+from GuiTools import HLayout, QuestionDialog
 
 class OptionsDialog(QDialog):
     """Dialog que proporciona inputs para la configuración del programa.
@@ -42,6 +42,7 @@ class OptionsDialog(QDialog):
             parent (QWidget): Padre de este QDialog. Defaults to None.
         """
         super().__init__(parent)
+        self.parent = parent
         self.setStyleSheet(Settings.global_style)
         self.__init_components()
 
@@ -66,6 +67,8 @@ class OptionsDialog(QDialog):
         socios_button.setStyleSheet("height: 18px; background-color: #232629;")
         prestamos_button.setIcon(QIcon("res/search_icon.png"))
         prestamos_button.setStyleSheet("height: 18px; background-color: #232629;")
+        log_out_button = QToolButton()
+        log_out_button.setText("Cerrar Sesión")
         cancel_button = QPushButton("Cancelar")
         cancel_button.setObjectName("normal_button")
         accept_button = QPushButton("Aceptar")
@@ -84,6 +87,7 @@ class OptionsDialog(QDialog):
             QLabel("Archivo de Préstamos"),
             True))
         self.layout.addLayout(HLayout(self.prestamos_path, prestamos_button))
+        self.layout.addWidget(log_out_button)
         self.layout.addStretch()
         self.layout.addLayout(HLayout(cancel_button, accept_button))
         self.setModal(True)
@@ -92,6 +96,7 @@ class OptionsDialog(QDialog):
         prestamos_button.clicked.connect(self.__select_prestamos_path)
         cancel_button.clicked.connect(self.reject)
         accept_button.clicked.connect(self.__save_state)
+        log_out_button.clicked.connect(self.__log_out)
 
     def __load_options(self):
         """Carga el estado inicial de los componentes dependiendo de las preferencias cargadas en el
@@ -158,6 +163,14 @@ class OptionsDialog(QDialog):
         })
         Settings.save_settings()
         self.accept()
+
+    def __log_out(self):
+        response = QuestionDialog.open_question("¿Deas cerrar sesión?", "¿Realmente deseas cerrar \
+        sesión?. La sincronización se detendrá.")
+        if response == 1:
+            self.parent.tray_icon.hide()
+            self.parent.hide()
+            qApp.exit(1)
 
     @staticmethod
     def open_dialog(parent: QWidget = None) -> int:
