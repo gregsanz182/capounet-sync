@@ -4,7 +4,6 @@
 from datetime import datetime
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLabel, QWidget, QPushButton, QMenu
 from PyQt5.QtWidgets import QHBoxLayout, QTextEdit, QSystemTrayIcon, QAction, qApp
-from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtGui import QPixmap, QIcon
 from Settings import Settings
 from OptionsDialog import OptionsDialog
