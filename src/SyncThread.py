@@ -50,11 +50,10 @@ class SyncThread(QObject, Thread):
         self.__change_last_sync(Settings.prestamos_file, self.window.prestamos_panel)
         while self.run_thread:
             flag1 = self.__sync_file(Settings.socios_file, self.window.socios_panel)
-            flag2 = False
-            #self.__sync_file(Settings.prestamos_file, self.window.prestamos_panel)
+            flag2 = self.__sync_file(Settings.prestamos_file, self.window.prestamos_panel)
             if flag1 or flag2:
                 Settings.save_files_hash()
-            if self.flag and self.ALL_OK != all(self.flag):
+            if self.flag and all(flag == self.ALL_OK for flag in self.flag):
                 self.window.tray_icon.setIcon(Settings.sync_error_icon)
             else:
                 self.window.tray_icon.setIcon(Settings.sync_icon)
@@ -112,7 +111,6 @@ class SyncThread(QObject, Thread):
                     )
                     self.flag[file_info["name"]] = self.INVALID_FILE_INTEGRITY
                 return False
-
         try:
             RequestsHandler.send_data_to_api(data, file_info["resource_path"])
         except RequestsHandlerException as exception:
