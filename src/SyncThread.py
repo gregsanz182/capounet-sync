@@ -96,23 +96,29 @@ class SyncThread(QObject, Thread):
         if file_info["hash"] == self.get_file_hash(file_info["file_path"]):
             return False
 
-        with open(file_info["file_path"], newline='') as csvfile:
+        csvfile = open(file_info["file_path"], newline='')
+        try:
             data = list(csv.DictReader(csvfile))
-            if not self.check_csv_integrity(data, file_info["fields"]):
-                if self.flag.get(file_info["name"]) != self.INVALID_FILE_INTEGRITY:
-                    self.log_signal.emit(
-                        'La integridad del CSV <strong>"{}"</strong> es inválida. \
-                        Pueden faltar campos o valores. Por favor verificar \
-                        el contenido de este.'.format(file_info["name"])
-                    )
-                    self.sync_state_signal.emit(
-                        self.sync_messages[self.INVALID_FILE_INTEGRITY],
-                        MessageType.ERROR,
-                        panel
-                    )
-                    self.flag[file_info["name"]] = self.INVALID_FILE_INTEGRITY
-                file_info["hash"] = ""
-                return False
+        except UnicodeDecodeError:
+            csvfile = open(file_info["file_path"], newline='', encoding='cp1252')
+        data = list(csv.DictReader(csvfile))
+        if not self.check_csv_integrity(data, file_info["fields"]):
+            if self.flag.get(file_info["name"]) != self.INVALID_FILE_INTEGRITY:
+                self.log_signal.emit(
+                    'La integridad del CSV <strong>"{}"</strong> es inválida. \
+                    Pueden faltar campos o valores. Por favor verificar \
+                    el contenido de este.'.format(file_info["name"])
+                )
+                self.sync_state_signal.emit(
+                    self.sync_messages[self.INVALID_FILE_INTEGRITY],
+                    MessageType.ERROR,
+                    panel
+                )
+                self.flag[file_info["name"]] = self.INVALID_FILE_INTEGRITY
+            file_info["hash"] = ""
+            csvfile.close()
+            return False
+        csvfile.close()
 
         try:
             RequestsHandler.send_data_to_api(data, file_info["resource_path"])

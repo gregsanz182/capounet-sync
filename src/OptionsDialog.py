@@ -128,7 +128,7 @@ class OptionsDialog(QDialog):
             clase.
         """
         file_path = QFileDialog.getOpenFileName(
-            self, "Selecciona archivo", filter="*.csv")[0]
+            self, "Selecciona archivo", filter="*.csv *.CSV")[0]
         if file_path:
             self.socios_path.setText(file_path)
             self.socios_check_box.setCheckState(Qt.Checked)
@@ -143,7 +143,7 @@ class OptionsDialog(QDialog):
             clase.
         """
         file_path = QFileDialog.getOpenFileName(
-            self, "Selecciona archivo", filter="*.csv")[0]
+            self, "Selecciona archivo", filter="*.csv *.CSV")[0]
         if file_path:
             self.prestamos_path.setText(file_path)
 
