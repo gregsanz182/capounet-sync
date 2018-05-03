@@ -2,11 +2,11 @@
 """Este módulo provee un Dialog para representar las diferentes opciones de la aplicación."""
 
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QCheckBox, QLabel, QLineEdit, QPushButton
-from PyQt5.QtWidgets import QFileDialog, QWidget, QToolButton, qApp, QHBoxLayout
+from PyQt5.QtWidgets import QFileDialog, QWidget
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 from Settings import Settings
-from GuiTools import HLayout, QuestionDialog
+from GuiTools import HLayout
 
 class OptionsDialog(QDialog):
     """Dialog que proporciona inputs para la configuración del programa.
@@ -67,14 +67,6 @@ class OptionsDialog(QDialog):
         socios_button.setStyleSheet("height: 18px; background-color: #232629;")
         prestamos_button.setIcon(QIcon("res/search_icon.png"))
         prestamos_button.setStyleSheet("height: 18px; background-color: #232629;")
-        log_out_button = QToolButton()
-        log_out_button.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-        log_out_button.setText("Cerrar Sesión")
-        log_out_button.setIcon(QIcon("res/logout.png"))
-        about_button = QToolButton()
-        about_button.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-        about_button.setText("Acerca de")
-        about_button.setIcon(QIcon("res/help.png"))
         cancel_button = QPushButton("Cancelar")
         cancel_button.setObjectName("normal_button")
         accept_button = QPushButton("Aceptar")
