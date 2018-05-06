@@ -10,7 +10,7 @@ from SyncThread import SyncThread
 
 def main():
     client_id = 2
-    client_secret = "5wTRjQrTePrdtXID3aRPJSKaoXOOIdzEiEt8wPW8"
+    client_secret = "pZs1yYaAQm4ISTPuzbjDPu6VpIvOd6hgZbAFvgHg"
     try:
         main_app = QApplication(sys.argv)
         QCoreApplication.setApplicationName("CAPOUNET Sync")
@@ -25,6 +25,7 @@ def main():
         while return_code:
             return_code = 2
             if not Settings.is_init():
+                Settings.delete_settings()
                 return_code = AccessDialog.obtain_configuration()
                 if return_code == 1:
                     return_code = OptionsDialog.open_dialog()

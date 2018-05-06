@@ -197,7 +197,10 @@ class Settings():
         cls.client_secret = client_secret
         config_path = QStandardPaths.standardLocations(QStandardPaths.DataLocation)[0]
         cls.qsettings = QSettings("{}/settings.ini".format(config_path), QSettings.IniFormat)
-        cls.qsettings_files = QSettings("{}/files_info.ini".format(config_path), QSettings.IniFormat)
+        cls.qsettings_files = QSettings(
+            "{}/files_info.ini".format(config_path),
+            QSettings.IniFormat
+        )
 
         #Se instancia un objeto Fernet con el secreto de la aplicación
         fernet = Fernet(cls.__secret)
@@ -287,4 +290,9 @@ class Settings():
     def delete_settings(cls):
         cls.access_token = ""
         cls.refresh_token = ""
+        cls.socios_file["hash"] = ""
+        cls.prestamos_file["hash"] = ""
+        cls.socios_file["last_sync"] = ""
+        cls.prestamos_file["last_sync"] = ""
         cls.qsettings.clear()
+        cls.qsettings_files.clear()

@@ -49,10 +49,11 @@ class SyncThread(QObject, Thread):
         self.__change_last_sync(Settings.socios_file, self.window.socios_panel)
         self.__change_last_sync(Settings.prestamos_file, self.window.prestamos_panel)
         while self.run_thread:
-            flag1 = self.__sync_file(Settings.socios_file, self.window.socios_panel)
-            flag2 = self.__sync_file(Settings.prestamos_file, self.window.prestamos_panel)
+            self.__sync_file(Settings.socios_file, self.window.socios_panel)
+            self.__sync_file(Settings.prestamos_file, self.window.prestamos_panel)
             Settings.save_files_hash()
-            if self.flag and any(flag_value != self.ALL_OK for flag_key, flag_value in self.flag.items()):
+            if self.flag \
+            and any(flag_value != self.ALL_OK for flag_key, flag_value in self.flag.items()):
                 self.window.tray_icon.setIcon(Settings.sync_error_icon)
             else:
                 self.window.tray_icon.setIcon(Settings.sync_icon)
@@ -101,7 +102,7 @@ class SyncThread(QObject, Thread):
             data = list(csv.DictReader(csvfile))
         except UnicodeDecodeError:
             csvfile = open(file_info["file_path"], newline='', encoding='cp1252')
-        data = list(csv.DictReader(csvfile))
+            data = list(csv.DictReader(csvfile))
         if not self.check_csv_integrity(data, file_info["fields"]):
             if self.flag.get(file_info["name"]) != self.INVALID_FILE_INTEGRITY:
                 self.log_signal.emit(
