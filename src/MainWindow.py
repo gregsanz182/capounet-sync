@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Este módulo contiene la ventana principal del programa."""
 
+import resources
 from datetime import datetime
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLabel, QWidget, QPushButton, QMenu
 from PyQt5.QtWidgets import QHBoxLayout, QTextEdit, QSystemTrayIcon, QAction, qApp
@@ -59,19 +60,19 @@ class MainWindow(QMainWindow):
 
         top_layout = QHBoxLayout()
         logo_label = QLabel()
-        logo_label.setPixmap(QPixmap("res/logo_2.png"))
+        logo_label.setPixmap(QPixmap(":res/logo_2.png"))
         config_button = QPushButton("Ajustes")
         config_button.setObjectName("toolbar_button")
-        config_button.setIcon(QIcon("res/cog.png"))
+        config_button.setIcon(QIcon(":res/cog.png"))
         help_button = QPushButton("Ayuda")
         help_button.setObjectName("toolbar_button")
-        help_button.setIcon(QIcon("res/help.png"))
+        help_button.setIcon(QIcon(":res/help.png"))
         help_menu = QMenu()
         logout_action = QAction("Cerrar sesión", self)
-        logout_action.setIcon(QIcon("res/logout.png"))
+        logout_action.setIcon(QIcon(":res/logout.png"))
         logout_action.triggered.connect(self.__log_out)
         about_action = QAction("Acerca de", self)
-        about_action.setIcon(QIcon("res/about.png"))
+        about_action.setIcon(QIcon(":res/about.png"))
         help_menu.addAction(logout_action)
         help_menu.addAction(about_action)
         help_button.setMenu(help_menu)
@@ -82,9 +83,9 @@ class MainWindow(QMainWindow):
         top_layout.addWidget(help_button)
 
         middle_layout = QHBoxLayout()
-        self.socios_panel = StatusPanel("Socios y Ahorros", "res/wallet.png")
+        self.socios_panel = StatusPanel("Socios y Ahorros", ":res/wallet.png")
         middle_layout.addWidget(self.socios_panel)
-        self.prestamos_panel = StatusPanel("Préstamos", "res/dues.png")
+        self.prestamos_panel = StatusPanel("Préstamos", ":res/dues.png")
         middle_layout.addWidget(self.prestamos_panel)
 
         self.text_log = QTextEdit()
@@ -97,11 +98,11 @@ class MainWindow(QMainWindow):
         self.tray_icon = QSystemTrayIcon(self)
         self.tray_icon.setIcon(Settings.sync_icon)
         show_action = QAction("Mostrar", self)
-        show_action.setIcon(QIcon("res/show.png"))
+        show_action.setIcon(QIcon(":res/show.png"))
         quit_action = QAction("Salir", self)
-        quit_action.setIcon(QIcon("res/exit.png"))
+        quit_action.setIcon(QIcon(":res/exit.png"))
         config_action = QAction("Preferencias", self)
-        config_action.setIcon(QIcon("res/cog.png"))
+        config_action.setIcon(QIcon(":res/cog.png"))
         show_action.triggered.connect(self.show)
         config_action.triggered.connect(self.open_options)
         quit_action.triggered.connect(self.close_app)

@@ -1,0 +1,22 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>res/about.png</file>
+    <file>res/cog.png</file>
+    <file>res/date_icon.png</file>
+    <file>res/dues.png</file>
+    <file>res/error_icon.png</file>
+    <file>res/exit.png</file>
+    <file>res/help.png</file>
+    <file>res/logo.png</file>
+    <file>res/logo_2.png</file>
+    <file>res/logout.png</file>
+    <file>res/search_icon.png</file>
+    <file>res/show.png</file>
+    <file>res/success_icon.png</file>
+    <file>res/wallet.png</file>
+    <file>res/warning_icon.png</file>
+    <file>res/icons/sync_error_icon.ico</file>
+    <file>res/icons/sync_icon.ico</file>
+    <file>res/icons/app_icon.ico</file>
+</qresource>
+</RCC>

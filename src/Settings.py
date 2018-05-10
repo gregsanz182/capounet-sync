@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Este módulo proporciona una clase para el manejo de las configuraciones del programa."""
 import os
+import resources
 from PyQt5.QtCore import QSettings, QStandardPaths, QDir, QCoreApplication, QSysInfo
 from PyQt5.QtGui import QIcon
 from cryptography.fernet import Fernet
@@ -229,9 +230,9 @@ class Settings():
             cls.prestamos_file["last_sync"] = cls.qsettings_files.value("prestamos/last_sync")
         cls.domain = cls.qsettings.value("urls/domain")
 
-        cls.app_icon = QIcon("res/icons/app_icon.ico")
-        cls.sync_icon = QIcon("res/icons/sync_icon.ico")
-        cls.sync_error_icon = QIcon("res/icons/sync_error_icon.ico")
+        cls.app_icon = QIcon(":res/icons/app_icon.ico")
+        cls.sync_icon = QIcon(":res/icons/sync_icon.ico")
+        cls.sync_error_icon = QIcon(":res/icons/sync_error_icon.ico")
         if cls.qsettings.value("misc/start_on_system"):
             cls.start_on_system = cls.qsettings.value("misc/start_on_system", type=bool)
         cls.set_start_on_system()

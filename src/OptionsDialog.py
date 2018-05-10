@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Este módulo provee un Dialog para representar las diferentes opciones de la aplicación."""
-
+import resources
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QCheckBox, QLabel, QLineEdit, QPushButton
 from PyQt5.QtWidgets import QFileDialog, QWidget
 from PyQt5.QtGui import QIcon
@@ -64,9 +64,9 @@ class OptionsDialog(QDialog):
         self.start_with_so_check_box = QCheckBox("Iniciar con el sistema operativo")
         socios_button = QPushButton()
         prestamos_button = QPushButton()
-        socios_button.setIcon(QIcon("res/search_icon.png"))
+        socios_button.setIcon(QIcon(":res/search_icon.png"))
         socios_button.setStyleSheet("height: 18px; background-color: #232629;")
-        prestamos_button.setIcon(QIcon("res/search_icon.png"))
+        prestamos_button.setIcon(QIcon(":res/search_icon.png"))
         prestamos_button.setStyleSheet("height: 18px; background-color: #232629;")
         cancel_button = QPushButton("Cancelar")
         cancel_button.setObjectName("normal_button")

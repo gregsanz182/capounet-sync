@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Este módulo incluye diferentes QWidgets y QLayouts personalizados para el uso en la aplicación"""
 
+import resources
 from enum import Enum
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QWidget, QFrame, QVBoxLayout, QMessageBox
 from PyQt5.QtWidgets import QPushButton
@@ -197,13 +198,13 @@ class InformationLabel(QWidget):
             QPixmap: El QPixmap que representa el tipo de mensaje.
         """
         if message_type == MessageType.SUCCESS:
-            return QPixmap("res/success_icon.png")
+            return QPixmap(":res/success_icon.png")
         elif message_type == MessageType.ERROR:
-            return QPixmap("res/error_icon.png")
+            return QPixmap(":res/error_icon.png")
         elif message_type == MessageType.WARNING:
-            return QPixmap("res/warning_icon.png")
+            return QPixmap(":res/warning_icon.png")
         elif message_type == MessageType.DATE:
-            return QPixmap("res/date_icon.png")
+            return QPixmap(":res/date_icon.png")
         elif message_type == MessageType.DISABLE:
             return QPixmap()
 

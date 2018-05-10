@@ -5,6 +5,7 @@ El AccessDialog pregunta las credenciales de usuario y obtiene los tokens de acc
 necesarios para la el manejo de la API rest.
 """
 
+import resources
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QWidget, QSizePolicy
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
@@ -67,7 +68,7 @@ class AccessDialog(QDialog):
 
         #Logo de la aplicación
         label_logo = QLabel()
-        label_logo.setPixmap(QPixmap("res/logo.png"))
+        label_logo.setPixmap(QPixmap(":res/logo.png"))
         label_logo.setAlignment(Qt.AlignCenter)
 
         #QLineEdit para 'usuario', 'contraseña' y 'dominio'
