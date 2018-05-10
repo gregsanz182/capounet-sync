@@ -10,7 +10,7 @@ from SyncThread import SyncThread
 
 def main():
     client_id = 2
-    client_secret = "pZs1yYaAQm4ISTPuzbjDPu6VpIvOd6hgZbAFvgHg"
+    client_secret = "O3cKUlA2SbAaG1HG6Celyjn2UBAZoJ6s7QSm42CK"
     try:
         main_app = QApplication(sys.argv)
         QCoreApplication.setApplicationName("CAPOUNET Sync")

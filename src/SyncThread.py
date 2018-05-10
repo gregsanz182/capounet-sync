@@ -6,7 +6,7 @@ from datetime import datetime
 from threading import Thread
 from os import path
 from MainWindow import MainWindow
-from PyQt5.QtCore import pyqtSignal, QObject
+from PyQt5.QtCore import pyqtSignal, QObject, QCoreApplication
 from PyQt5.QtWidgets import QWidget
 from GuiTools import MessageType, StatusPanel
 from Settings import Settings
@@ -46,6 +46,7 @@ class SyncThread(QObject, Thread):
     def run(self):
         self.log_signal.emit("Inicializando...")
         self.log_signal.emit("Leyendo configuracion...")
+        self.log_signal.emit(QCoreApplication.applicationFilePath())
         self.__change_last_sync(Settings.socios_file, self.window.socios_panel)
         self.__change_last_sync(Settings.prestamos_file, self.window.prestamos_panel)
         while self.run_thread:

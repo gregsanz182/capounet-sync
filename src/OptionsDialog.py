@@ -4,7 +4,7 @@
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QCheckBox, QLabel, QLineEdit, QPushButton
 from PyQt5.QtWidgets import QFileDialog, QWidget
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSysInfo
 from Settings import Settings
 from GuiTools import HLayout
 
@@ -61,6 +61,7 @@ class OptionsDialog(QDialog):
         self.prestamos_check_box = QCheckBox()
         self.socios_path = QLineEdit()
         self.prestamos_path = QLineEdit()
+        self.start_with_so_check_box = QCheckBox("Iniciar con el sistema operativo")
         socios_button = QPushButton()
         prestamos_button = QPushButton()
         socios_button.setIcon(QIcon("res/search_icon.png"))
@@ -84,6 +85,9 @@ class OptionsDialog(QDialog):
             QLabel("Archivo de Préstamos"),
             True))
         self.layout.addLayout(HLayout(self.prestamos_path, prestamos_button))
+        if QSysInfo.productType() == "windows":
+            self.layout.addSpacing(10)
+            self.layout.addWidget(self.start_with_so_check_box)
         self.layout.addStretch()
         self.layout.addLayout(HLayout(cancel_button, accept_button))
         self.setModal(True)
@@ -106,6 +110,9 @@ class OptionsDialog(QDialog):
         )
         self.prestamos_check_box.setCheckState(
             Qt.Checked if Settings.prestamos_file["enabled"] else Qt.Unchecked
+        )
+        self.start_with_so_check_box.setCheckState(
+            Qt.Checked if Settings.start_on_system else Qt.Unchecked
         )
         self.prestamos_path.setText(Settings.prestamos_file["file_path"])
         self.socios_path.setText(Settings.socios_file["file_path"])
@@ -156,6 +163,11 @@ class OptionsDialog(QDialog):
             and self.prestamos_path.text() else False,
             "file_path": self.prestamos_path.text()
         })
+        if self.start_with_so_check_box.checkState() == Qt.Checked:
+            Settings.start_on_system = True
+        else:
+            Settings.start_on_system = False
+        Settings.set_start_on_system()
         Settings.save_settings()
         self.accept()
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Este módulo proporciona una clase para el manejo de las configuraciones del programa."""
-
-from PyQt5.QtCore import QSettings, QStandardPaths
+import os
+from PyQt5.QtCore import QSettings, QStandardPaths, QDir, QCoreApplication, QSysInfo
 from PyQt5.QtGui import QIcon
 from cryptography.fernet import Fernet
 
@@ -123,6 +123,7 @@ class Settings():
     app_icon = None
     sync_icon = None
     sync_error_icon = None
+    start_on_system = True
 
     @classmethod
     def save_settings(cls):
@@ -179,6 +180,7 @@ class Settings():
         )
 
         cls.qsettings.setValue("urls/domain", cls.domain)
+        cls.qsettings.setValue("misc/start_on_system", cls.start_on_system)
         cls.qsettings.sync()
 
     @classmethod
@@ -230,6 +232,9 @@ class Settings():
         cls.app_icon = QIcon("res/icons/app_icon.ico")
         cls.sync_icon = QIcon("res/icons/sync_icon.ico")
         cls.sync_error_icon = QIcon("res/icons/sync_error_icon.ico")
+        if cls.qsettings.value("misc/start_on_system"):
+            cls.start_on_system = cls.qsettings.value("misc/start_on_system", type=bool)
+        cls.set_start_on_system()
 
     @classmethod
     def __get_setting(cls, setting: str) -> str:
@@ -274,6 +279,24 @@ class Settings():
             str: Ruta para acceder a los recursos de la API.
         """
         return cls.domain + cls.__api_path + resource_url
+
+    @classmethod
+    def set_start_on_system(cls):
+        app_path = QCoreApplication.applicationFilePath()
+        if QSysInfo.productType() == "windows" \
+        and os.path.basename(app_path) == "capounet_sync.exe":
+            settings = QSettings(
+                "HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                QSettings.NativeFormat
+            )
+            if cls.start_on_system:
+                settings.setValue(
+                    "CAPOUNET SYNC",
+                    QDir.toNativeSeparators(app_path)
+                )
+                settings.sync()
+            else:
+                settings.remove("CAPOUNET SYNC")
 
     @classmethod
     def save_files_hash(cls):
