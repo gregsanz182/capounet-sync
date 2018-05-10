@@ -7,12 +7,15 @@ from MainWindow import MainWindow
 from AccessDialog import AccessDialog
 from OptionsDialog import OptionsDialog
 from SyncThread import SyncThread
+from QtSingleApplication import QtSingleApplication
 
 def main():
     client_id = 2
     client_secret = "O3cKUlA2SbAaG1HG6Celyjn2UBAZoJ6s7QSm42CK"
     try:
-        main_app = QApplication(sys.argv)
+        main_app = QtSingleApplication(client_secret, sys.argv)
+        if main_app.isRunning():
+            sys.exit(0)
         QCoreApplication.setApplicationName("CAPOUNET Sync")
         QCoreApplication.setOrganizationName("CAPOUNET")
         QCoreApplication.setOrganizationDomain("capounet.unet.edu.ve")
