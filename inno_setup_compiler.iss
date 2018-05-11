@@ -18,8 +18,8 @@ DefaultGroupName=CAPOUNET Sync
 AllowNoIcons=yes
 OutputDir=build
 OutputBaseFilename=capounet-setup_v1.1
-SetupIconFile=res\icons\app_icon.ico
-UninstallDisplayIcon=res\icons\app_icon.ico
+SetupIconFile=res\icons\installer_icon.ico
+UninstallDisplayIcon=res\icons\app_ico.ico
 Compression=lzma
 SolidCompression=yes
 MinVersion=6.1
@@ -32,6 +32,9 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [UninstallDelete]
 Type: filesandordirs; Name:"{localappdata}\CAPOUNET\CAPOUNET Sync"
+
+[UninstallRun]
+Filename: "{cmd}"; Parameters: "/C ""taskkill /im capounet_sync.exe /f /t"
 
 [Files]
 Source: "build\exe.win32-3.6\capounet_sync.exe"; DestDir: "{app}"; Flags: ignoreversion
