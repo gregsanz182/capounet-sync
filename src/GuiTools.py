@@ -1,5 +1,23 @@
 # -*- coding: utf-8 -*-
-"""Este módulo incluye diferentes QWidgets y QLayouts personalizados para el uso en la aplicación"""
+# This file is part of CAPOUNET Sync.
+#
+# CAPOUNET Sync
+# Copyright (C) 2018  Gregory Sánchez and Anny Chacón
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""Este módulo incluye diferentes QWidgets y QLayouts personalizados para el uso en la aplicación
+"""
 
 import resources
 from enum import Enum
@@ -256,6 +274,12 @@ Nacional Experimental del Táchira.
 <strong>Desarrolladores:</strong>
 <br> -Gregory Sánchez <a href="https://github.com/gregsanz182">@gregsanz182</a>
 <br> -Anny Chacón <a href="https://github.com/AnnyEsme27">@AnnyEsme27</a>
+<br>
+<br><strong>GNU General Public License v3.0</strong>
+<br>Este programa no incluye garantía alguna.
+<br>Es software libre, y puedes distribuirlo bajo ciertas condiciones.
+<br>Debiste haber recibido una copia de la Licencia Pública General (GNU) con este programa.
+Si no es así, visita <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.
 </div>
             """
         )
