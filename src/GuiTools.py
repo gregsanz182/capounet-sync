@@ -4,7 +4,7 @@
 import resources
 from enum import Enum
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QWidget, QFrame, QVBoxLayout, QMessageBox
-from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import QPushButton, qApp
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QPixmap
 
@@ -228,3 +228,41 @@ class QuestionDialog(QMessageBox):
     def open_question(title: str, text: str, parent: QWidget = None):
         dialog = QuestionDialog(title, text, parent)
         return dialog.exec_()
+
+class AboutBox(QMessageBox):
+
+    def __init__(self, parent: QWidget = None):
+        super().__init__(parent)
+        self.setTextFormat(Qt.RichText)
+        self.setText(
+            """
+<style>
+    a {color: #eeeeef;}
+    div {color: #ececec;}
+</style>
+<div>
+<strong>CAPOUNET Sync</strong>
+<br>©2018
+<br><br>
+Desarrollado para la Caja de Ahorros del Personal Obrero de la Universidad \
+Nacional Experimental del Táchira.
+<br><br>
+<strong>Esta aplicación ha sido desarrollada con:</strong>
+<br> - Python 3.6
+<br> - PyQt5
+<br> - Requests 2.18.4
+<br> - QDarkStyle 2.5.4
+<br><br>
+<strong>Desarrolladores:</strong>
+<br> -Gregory Sánchez <a href="https://github.com/gregsanz182">@gregsanz182</a>
+<br> -Anny Chacón <a href="https://github.com/AnnyEsme27">@AnnyEsme27</a>
+</div>
+            """
+        )
+        self.setIconPixmap(qApp.windowIcon().pixmap(QSize(80, 80)))
+        self.setWindowTitle("Sobre CAPOUNET Sync")
+
+    @classmethod
+    def show_box(cls, parent: QWidget = None):
+        box = AboutBox(parent)
+        box.exec_()

@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QHBoxLayout, QTextEdit, QSystemTrayIcon, QAction, qA
 from PyQt5.QtGui import QPixmap, QIcon
 from Settings import Settings
 from OptionsDialog import OptionsDialog
-from GuiTools import StatusPanel, QuestionDialog
+from GuiTools import StatusPanel, QuestionDialog, AboutBox
 
 class MainWindow(QMainWindow):
     """Ventana principal de la aplicación.
@@ -73,6 +73,7 @@ class MainWindow(QMainWindow):
         logout_action.triggered.connect(self.__log_out)
         about_action = QAction("Acerca de", self)
         about_action.setIcon(QIcon(":res/about.png"))
+        about_action.triggered.connect(self.__about)
         help_menu.addAction(logout_action)
         help_menu.addAction(about_action)
         help_button.setMenu(help_menu)
@@ -132,6 +133,9 @@ class MainWindow(QMainWindow):
             self.tray_icon.hide()
             self.hide()
             qApp.exit(1)
+
+    def __about(self):
+        AboutBox.show_box(self)
 
     def print_log(self, string: str):
         """Imprime un mensaje en el log.
