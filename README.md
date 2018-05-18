@@ -6,10 +6,16 @@ CAPOUNET Sync
   <img src="res/logo_normal.png"/>
 </p>
 <br>
+<p align="center">
+  <img src="res/app_preview.png"/>
+</p>
+<br>
 
 CAPOUNET Sync es una aplicación de escritorio encargada de sincronizar la base de datos de la página web de la Caja de Ahorros del Personal Obrero de la Universidad Nacional Experimental del Táchira a través de archivos CSV previamente generados con la información de los socios.
 
 CAPOUNET Sync está desarrollada en Python 3.6.5 utilizando PyQt5 para el entorno gráfico.
+
+
 
 ## Documentación
 
