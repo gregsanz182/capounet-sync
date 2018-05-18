@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.png"/>
+  <img src="res/logo.png"/>
 </p>
 
 # CAPOUNET Sync
