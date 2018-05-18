@@ -273,7 +273,7 @@ Nacional Experimental del Táchira.
 <br><br>
 <strong>Desarrolladores:</strong>
 <br> -Gregory Sánchez <a href="https://github.com/gregsanz182">@gregsanz182</a>
-<br> -Anny Chacón <a href="https://github.com/AnnyEsme27">@AnnyEsme27</a>
+<br> -Anny Chacón <a href="https://github.com/AnnyChacon">@AnnyChacon</a>
 <br>
 <br><strong>GNU General Public License v3.0</strong>
 <br>Este programa no incluye garantía alguna.

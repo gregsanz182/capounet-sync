@@ -29,7 +29,7 @@ from QtSingleApplication import QtSingleApplication
 
 def main():
     client_id = 2
-    client_secret = "O3cKUlA2SbAaG1HG6Celyjn2UBAZoJ6s7QSm42CK"
+    client_secret = ""
     try:
         main_app = QtSingleApplication(client_secret, sys.argv)
         if main_app.isRunning():
