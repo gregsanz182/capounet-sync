@@ -22,12 +22,14 @@ El AccessDialog pregunta las credenciales de usuario y obtiene los tokens de acc
 necesarios para la el manejo de la API rest.
 """
 
-import resources
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QWidget, QSizePolicy
+from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QWidget
+from PyQt5.QtWidgets import QSizePolicy
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
-from RequestsHandler import RequestsHandler, RequestsHandlerException
-from Settings import Settings
+
+import resources # pylint: disable=W0611
+from request_handler import RequestsHandler, RequestsHandlerException
+from settings import Settings
 
 class AccessDialog(QDialog):
     """QDialog para la obtención de las credenciales de usuario y la petición de tokens.

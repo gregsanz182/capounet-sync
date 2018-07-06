@@ -23,12 +23,13 @@ import json
 from datetime import datetime
 from threading import Thread
 from os import path
-from MainWindow import MainWindow
-from PyQt5.QtCore import pyqtSignal, QObject, QCoreApplication
+from PyQt5.QtCore import pyqtSignal, QObject
 from PyQt5.QtWidgets import QWidget
-from GuiTools import MessageType, StatusPanel
-from Settings import Settings
-from RequestsHandler import RequestsHandler, RequestsHandlerException
+
+from main_window import MainWindow
+from gui_tools import MessageType, StatusPanel
+from settings import Settings
+from request_handler import RequestsHandler, RequestsHandlerException
 
 class SyncThread(QObject, Thread):
 

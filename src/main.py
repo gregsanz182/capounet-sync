@@ -27,10 +27,10 @@ from PyQt5.QtCore import QCoreApplication
 
 from settings import Settings
 from main_window import MainWindow
-from AccessDialog import AccessDialog
-from OptionsDialog import OptionsDialog
-from SyncThread import SyncThread
-from QtSingleApplication import QtSingleApplication
+from access_dialog import AccessDialog
+from options_dialog import OptionsDialog
+from sync_thread import SyncThread
+from qt_single_application import QtSingleApplication
 
 def main():
     """Main del proyecto. Aquí se inicializan los objetos principales, comienza todo el código.
