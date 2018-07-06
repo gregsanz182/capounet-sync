@@ -16,20 +16,29 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""Este módulo incluye el main del código.
+
+Aquí comienza el código de la aplicación.
+"""
 
 import sys
 import qdarkstyle
 from PyQt5.QtCore import QCoreApplication
 from Settings import Settings
-from MainWindow import MainWindow
+from main_window import MainWindow
 from AccessDialog import AccessDialog
 from OptionsDialog import OptionsDialog
 from SyncThread import SyncThread
 from QtSingleApplication import QtSingleApplication
 
 def main():
-    client_id = 2
-    client_secret = ""
+    """Main del proyecto. Aquí se inicializan los objetos principales, comienza todo el código.
+    """
+    client_id = 2 #ID del cliente en Laravel Passport. Por defecto es 2, y no debería cambiarse.
+
+    #Secreto del cliente. Debe ser generado por Laravel Passport en la API.
+    client_secret = "myaXdWXreQQmVBYN1r02g75F8GRQ60UsCVCcv0cP"
+
     try:
         main_app = QtSingleApplication(client_secret, sys.argv)
         if main_app.isRunning():

@@ -20,7 +20,6 @@
 Este módulo contiene la ventana principal del programa.
 """
 
-import resources
 from datetime import datetime
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLabel, QWidget, QPushButton, QMenu
 from PyQt5.QtWidgets import QHBoxLayout, QTextEdit, QSystemTrayIcon, QAction, qApp
@@ -40,15 +39,13 @@ class MainWindow(QMainWindow):
 
     Attributes:
         layout (QVBoxLayout): Layout del Widget central.
-        top_layout (QHBoxLayout): Layout de la parte superior del widget central.
-        middle_layout (QHBoxLayout): Layout para la mitad del widget central.
-        config_button (QPushButton): Botón para acceder al Dialog de opciones.
         socios_panel (StatusPanel): Panel que contiene información sobre la sincronización del
             archivo "Socios y Ahorros".
         prestamos_panel (StatusPanel): Panel que contiene información sobre la sincronización del
             archivo "Préstamos".
         text_log (QTextEdit): Campo de texto de solo lectura que muestra el log de los procesos
             llevados a cabo por el programa, asi como mensajes de advertencia y error.
+        tray_icon (QSystemTrayIcon): Icono de en la bandeja del sistema.
     """
 
     def __init__(self):
@@ -143,6 +140,12 @@ class MainWindow(QMainWindow):
         OptionsDialog.open_dialog(self)
 
     def __log_out(self):
+        """Cierra sesión. Primero pregunta si desea cerrar sesión y luego procede.
+
+        Note:
+            Esta función no debe ser llamada desde el exterior, puesto que su uso es interno en la
+            clase.
+        """
         response = QuestionDialog.open_question(
             "¿Deas cerrar sesión?",
             "¿Realmente deseas cerrar sesión?. La sincronización se detendrá.",
@@ -154,6 +157,12 @@ class MainWindow(QMainWindow):
             qApp.exit(1)
 
     def __about(self):
+        """Muestra el dialogo de "Acerca de"
+
+        Note:
+            Esta función no debe ser llamada desde el exterior, puesto que su uso es interno en la
+            clase.
+        """
         AboutBox.show_box(self)
 
     def print_log(self, string: str):
@@ -176,14 +185,23 @@ class MainWindow(QMainWindow):
             self.text_log.verticalScrollBar().setValue(self.text_log.verticalScrollBar().maximum())
 
     def closeEvent(self, event):
+        """Cierra la ventana. Pero no la aplicación.
+        """
         event.ignore()
         self.hide()
 
     def show_now(self, reason: QSystemTrayIcon.ActivationReason):
+        """Muestra la ventana cuando se hace doblo click en el icono de bandeja.
+        """
         if reason == QSystemTrayIcon.DoubleClick:
             self.show()
 
     def close_app(self):
+        """Cierra completamente la aplicación.
+
+        Primero se pregunta si se desea salir. Luego esconde el icono de bandeja y cierra la aplica-
+        ción.
+        """
         self.show()
         response = QuestionDialog.open_question("¿Deseas salir?", "¿Realmente deseas salir?", self)
         if response == 1:
