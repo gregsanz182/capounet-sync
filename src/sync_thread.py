@@ -16,6 +16,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+""" Este módulo contiene la clase SyncThread encargada del manejo del hilo de sincronización."""
 import time
 import zlib
 import csv
@@ -32,6 +33,24 @@ from settings import Settings
 from request_handler import RequestsHandler, RequestsHandlerException
 
 class SyncThread(QObject, Thread):
+    """Clase encargada del manejo del hilo de sincronización
+
+    Note:
+        La configuración de la aplicación debe haber sido cargada previamente. Para esto llamar
+        a Settings.load_settings().
+
+    Attributes:
+        log_signal (pyqtSignal): Señal a llamar cuando se desea registrar un evento en el log
+        gráfico.
+        sync_state_signal (pyqtSignal): Señal a llamar cuando se desea mostrar un cambio en los
+        paneles de status.
+        run_thread (bool): True si el hilo debe correr. False si se debe detener.
+        window (MainWindow): Ventana principal de la aplicación.
+        flag (QLineEdit): Banderas de estado de ejecución del hilo. Usadas para informar cuando ya
+        ocurrió un error y no se desea volver a mostrarlo.
+        sync_messages (dict): Diccionario con los mensajes predefinidos para cada estado de sincro-
+        nización.
+    """
 
     log_signal = pyqtSignal(str)
     sync_state_signal = pyqtSignal(str, MessageType, StatusPanel)
@@ -53,16 +72,27 @@ class SyncThread(QObject, Thread):
     }
 
     def __init__(self, mainWindow: MainWindow):
+        """Constructor de la clase. Construye e inicializa una instancia de SyncThread.
+
+        Note:
+            Antes de instanciar un objeto de esta clase, la configuración del programa debe haber
+            sido cargada. Para esto llamar a Settings.load_settings().
+
+        Args:
+            mainWindow (QWidget): Ventana principal de la aplicación.
+        """
         super(SyncThread, self).__init__()
         self.window = mainWindow
         self.flag = {}
-        self.__make_connections()
-
-    def __make_connections(self):
         self.log_signal.connect(self.window.print_log)
         self.sync_state_signal.connect(self.set_sync_state)
 
     def run(self):
+        """Método a ejecutar cuando por el hilo.
+
+        Se encarga de realizar toda la tarea de sincronización de los archivos y de mostrar los
+        debidos mensajes en la interfaz gráfica (Ventana Pricipal).
+        """
         self.log_signal.emit("Inicializando...")
         self.log_signal.emit("Leyendo configuracion...")
         self.__change_last_sync(Settings.socios_file, self.window.socios_panel)
@@ -82,6 +112,21 @@ class SyncThread(QObject, Thread):
             time.sleep(5)
 
     def __sync_file(self, file_info: dict, panel: QWidget):
+        """Sincroniza el archivo especificado en file_info.
+
+        Se encarga de revisar si existen cambios en el archivo a sincronizar. Luego verifica que
+        la información contenida sea válida y por último intenta enviar la información al servidor
+        por medio de la API.
+
+        Args:
+            file_info (dict): Información del archivo a sincronizar.
+            panel (QWidget): Panel de estado del archivo a sincronizar. Utilizado para mostrar los
+            cambios y mensajes de estado.
+
+        Note:
+            Esta función no debe ser llamada desde el exterior, puesto que su uso es interno en la
+            clase.
+        """
         if not file_info["enabled"]:
             if self.flag.get(file_info["name"]) != self.DISABLED_SYNC:
                 self.log_signal.emit(
@@ -115,7 +160,7 @@ class SyncThread(QObject, Thread):
             file_info["hash"] = ""
             return False
 
-        if file_info["hash"] == self.get_file_hash(file_info["file_path"]):
+        if file_info["hash"] == self.get_file_checksum(file_info["file_path"]):
             return False
 
         csvfile = open(file_info["file_path"], newline='')
@@ -157,7 +202,7 @@ class SyncThread(QObject, Thread):
             return
 
         self.flag[file_info["name"]] = self.ALL_OK
-        file_info["hash"] = self.get_file_hash(file_info["file_path"])
+        file_info["hash"] = self.get_file_checksum(file_info["file_path"])
         self.log_signal.emit(
             "Archivo<strong> {} </strong>sincronizado correctamente.".format(file_info["name"])
         )
@@ -171,7 +216,15 @@ class SyncThread(QObject, Thread):
         return True
 
     @staticmethod
-    def get_file_hash(file_path: str) -> str:
+    def get_file_checksum(file_path: str) -> str:
+        """Devuelve el checksum CRC32 del archivo especificado.
+
+        Args:
+            file_path (str): Ruta del fichero.
+
+        Returns:
+            str: Checksum crc32 del fichero analizado.
+        """
         buffersize = 65536
 
         with open(file_path, 'rb') as afile:
@@ -185,6 +238,18 @@ class SyncThread(QObject, Thread):
 
     @staticmethod
     def check_csv_integrity(data: list, fields: list):
+        """Válida la integridad del fichero CSV.
+
+        Verifica que la información contenida en data sea válidad utilizando los campos pasados en
+        fields.
+
+        Args:
+            data (list): Listado con la data extraida del CSV.
+            fields (list): Listado con los campos a verificar.
+
+        Returns:
+            bool: True si la data analizada es válida. False en caso contrario.
+        """
         for row in data:
             for field in fields:
                 if field[1] and not row.get(field[0]):
@@ -192,6 +257,12 @@ class SyncThread(QObject, Thread):
         return True
 
     def __change_last_sync(self, file_info: dict, panel: QWidget):
+        """Cambia la fecha de la última sincronización correcta.
+
+        Args:
+            file_info (dict): Información del fichero.
+            panel (QWidget): Panel de estado a modificar.
+        """
         self.sync_state_signal.emit(
             file_info["last_sync"],
             MessageType.DATE,
@@ -199,10 +270,22 @@ class SyncThread(QObject, Thread):
         )
 
     def stop_sync(self):
+        """Detiene la sincronización. En otras palabras, detiene el hilo cuando se haya terminado la
+        operación actual.
+        """
         self.run_thread = False
 
     @staticmethod
     def write_json(data, json_file):
+        """Permite escribir un archivo .json con la data pasada por parámetro.
+
+        Args:
+            data: Información a escribir.
+            json_file: Ruta del fichero a escribir.
+
+        Note:
+            Este método fue creado para ser utilizado en la depuración de errores.
+        """
         with open(json_file, "w") as jfile:
             jfile.write(json.dumps(
                 data,
@@ -213,6 +296,16 @@ class SyncThread(QObject, Thread):
 
     @staticmethod
     def write_html(data, html_file):
+        """Permite escribir un archivo .html con la data pasada por parámetro. Útil para mostrar las
+        respuestas del servidor API.
+
+        Args:
+            data: Información a escribir.
+            html_file: Ruta del fichero a escribir.
+
+        Note:
+            Este método fue creado para ser utilizado en la depuración de errores.
+        """
         with open(html_file, "w") as jfile:
             jfile.write(data)
 
