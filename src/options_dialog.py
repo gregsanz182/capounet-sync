@@ -17,12 +17,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """Este módulo provee un Dialog para representar las diferentes opciones de la aplicación."""
-import resources
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QCheckBox, QLabel, QLineEdit, QPushButton
 from PyQt5.QtWidgets import QFileDialog, QWidget
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QSysInfo
-from Settings import Settings
+import resources
+from settings import Settings
 from GuiTools import HLayout
 
 class OptionsDialog(QDialog):
@@ -46,6 +46,8 @@ class OptionsDialog(QDialog):
             del archivo 'Prestamos'.
         socios_path (QLineEdit): Permite el ingreso de la ruta al archivo 'Socios y Ahorros'.
         prestamos_path (QLineEdit): Permite el ingreso de la ruta al archivo 'Prestamos'.
+        start_with_so_check_box (QCheckBox): Checkbox para habilitar o deshabilitar el arranque de
+        la aplicación con el sistema.
     """
 
     def __init__(self, parent: QWidget = None):

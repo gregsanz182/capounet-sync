@@ -25,7 +25,7 @@ from PyQt5.QtWidgets import QHBoxLayout, QTextEdit, QSystemTrayIcon, QAction, qA
 from PyQt5.QtGui import QPixmap, QIcon
 import resources
 from settings import Settings
-from OptionsDialog import OptionsDialog
+from options_dialog import OptionsDialog
 from GuiTools import StatusPanel, QuestionDialog, AboutBox
 
 class MainWindow(QMainWindow):
