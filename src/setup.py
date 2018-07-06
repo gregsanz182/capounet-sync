@@ -16,7 +16,12 @@ options = {
 }
 
 executables = [
-    Executable('src/main.py', base=base, icon="res/icons/app_icon.ico", targetName="capounet_sync.exe")
+    Executable(
+        'src/main.py',
+        base=base,
+        icon="res/icons/app_icon.ico",
+        targetName="capounet_sync.exe"
+    )
 ]
 
 setup(

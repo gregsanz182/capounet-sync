@@ -18,9 +18,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """Este módulo proporciona métodos para en el envio de peticiones al servidor API restful."""
 
-import requests
 import json
-from Settings import Settings
+
+import requests # pylint: disable=W0611
+from settings import Settings
 
 class RequestsHandler():
     """Clase encargada de manejar el envio de peticiones al servidor API.

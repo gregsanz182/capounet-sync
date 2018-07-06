@@ -21,7 +21,7 @@ import os
 from PyQt5.QtCore import QSettings, QStandardPaths, QDir, QCoreApplication, QSysInfo
 from PyQt5.QtGui import QIcon
 from cryptography.fernet import Fernet
-import resources
+import resources # pylint: disable=W0611
 
 class Settings():
     """Esta clase proporciona variables y métodos para el manejo de preferencias y configuraciones.

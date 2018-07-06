@@ -24,7 +24,7 @@ from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLabel, QWidget, QPushButt
 from PyQt5.QtWidgets import QHBoxLayout, QTextEdit, QSystemTrayIcon, QAction, qApp
 from PyQt5.QtGui import QPixmap, QIcon
 
-import resources # # pylint: disable=W0611
+import resources # pylint: disable=W0611
 from settings import Settings
 from options_dialog import OptionsDialog
 from gui_tools import StatusPanel, QuestionDialog, AboutBox

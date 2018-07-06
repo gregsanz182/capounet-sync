@@ -16,13 +16,15 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""Este módulo permite crear una sola instancia de la aplicación."""
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtNetwork import *
+from PyQt5.QtCore import pyqtSignal, QTextStream, Qt
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtNetwork import QLocalSocket, QLocalServer
 
 class QtSingleApplication(QApplication):
+    """QApplication que permite solo una instancia de la aplicación.
+    """
 
     messageReceived = pyqtSignal(str)
 
@@ -76,7 +78,7 @@ class QtSingleApplication(QApplication):
     def sendMessage(self, msg):
         if not self._outStream:
             return False
-        self._outStream << msg << '\n'
+        self._outStream << msg << '\n' # pylint: disable=W0104
         self._outStream.flush()
         return self._outSocket.waitForBytesWritten()
 
