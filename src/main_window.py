@@ -19,12 +19,12 @@
 """
 Este módulo contiene la ventana principal del programa.
 """
-
 from datetime import datetime
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLabel, QWidget, QPushButton, QMenu
 from PyQt5.QtWidgets import QHBoxLayout, QTextEdit, QSystemTrayIcon, QAction, qApp
 from PyQt5.QtGui import QPixmap, QIcon
-from Settings import Settings
+import resources
+from settings import Settings
 from OptionsDialog import OptionsDialog
 from GuiTools import StatusPanel, QuestionDialog, AboutBox
 

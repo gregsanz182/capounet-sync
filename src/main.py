@@ -24,7 +24,7 @@ Aquí comienza el código de la aplicación.
 import sys
 import qdarkstyle
 from PyQt5.QtCore import QCoreApplication
-from Settings import Settings
+from settings import Settings
 from main_window import MainWindow
 from AccessDialog import AccessDialog
 from OptionsDialog import OptionsDialog

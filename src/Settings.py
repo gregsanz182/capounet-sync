@@ -18,10 +18,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """Este módulo proporciona una clase para el manejo de las configuraciones del programa."""
 import os
-import resources
 from PyQt5.QtCore import QSettings, QStandardPaths, QDir, QCoreApplication, QSysInfo
 from PyQt5.QtGui import QIcon
 from cryptography.fernet import Fernet
+import resources
 
 class Settings():
     """Esta clase proporciona variables y métodos para el manejo de preferencias y configuraciones.
@@ -300,6 +300,10 @@ class Settings():
 
     @classmethod
     def set_start_on_system(cls):
+        """Habilita la opción de iniciar la aplicación con el sistema.
+        Esta funcionalidad solo se habilita si el sistema es Windows y si se está ejecutando desde
+        un .exe
+        """
         app_path = QCoreApplication.applicationFilePath()
         if QSysInfo.productType() == "windows" \
         and os.path.basename(app_path) == "capounet_sync.exe":
@@ -329,6 +333,8 @@ class Settings():
 
     @classmethod
     def delete_settings(cls):
+        """Borra todas la preferencias.
+        """
         cls.access_token = ""
         cls.refresh_token = ""
         cls.socios_file["hash"] = ""
