@@ -19,12 +19,13 @@
 """Este módulo incluye diferentes QWidgets y QLayouts personalizados para el uso en la aplicación
 """
 
-import resources
 from enum import Enum
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QWidget, QFrame, QVBoxLayout, QMessageBox
 from PyQt5.QtWidgets import QPushButton, qApp
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QPixmap
+
+import resources # pylint: disable=W0611
 
 class HLayout(QHBoxLayout):
     """QLayout horizontal para dos QWidgets. Hereda de QHBoxLayout."""
@@ -227,8 +228,23 @@ class InformationLabel(QWidget):
             return QPixmap()
 
 class QuestionDialog(QMessageBox):
+    """Dialogo personalizado de mensaje.
+
+    Este QMessageBox es un dialogo de mensaje personalizado.
+    """
 
     def __init__(self, title: str, text: str, parent: QWidget = None):
+        """Constructor de la clase. Construye e inicializa una instancia de QuestionDialog.
+
+        Note:
+            Antes de instanciar un objeto de esta clase, la configuración del programa debe haber
+            sido cargada. Para esto llamar a Settings.load_settings().
+
+        Args:
+            title (str): Titúlo de la ventana.
+            text (str): Texto a mostrar.
+            parent (QWidget): Padre de este QDialog. Defaults to None.
+        """
         super().__init__(parent)
         self.setWindowTitle(title)
         self.setText(text)
@@ -244,12 +260,41 @@ class QuestionDialog(QMessageBox):
 
     @staticmethod
     def open_question(title: str, text: str, parent: QWidget = None):
+        """Abre un QuestionDialog para su uso rápido.
+
+        Crea un objeto instancia de QuestionDialog y a la vez abre el Dialog.
+
+        Note:
+            Puede ser llamado sin necesidad de instanciar un objeto previamente.
+
+        Args:
+            title (str): Titúlo de la ventana.
+            text (str): Texto a mostrar.
+            parent (QWidget): Padre de este QDialog. Defaults to None.
+
+        Returns:
+            int: 1 si se presionó sí. 0 si se presionó no.
+        """
         dialog = QuestionDialog(title, text, parent)
         return dialog.exec_()
 
 class AboutBox(QMessageBox):
+    """Dialogo de "Acerda de"
+
+    Este dialogo muestra información sobre la aplicación, sus desarrolladores, versión, licencia y
+    otros datos importantes.
+    """
 
     def __init__(self, parent: QWidget = None):
+        """Constructor de la clase. Construye e inicializa una instancia de AboutBox.
+
+        Note:
+            Antes de instanciar un objeto de esta clase, la configuración del programa debe haber
+            sido cargada. Para esto llamar a Settings.load_settings().
+
+        Args:
+            parent (QWidget): Padre de este QDialog. Defaults to None.
+        """
         super().__init__(parent)
         self.setTextFormat(Qt.RichText)
         self.setText(
@@ -288,5 +333,15 @@ Si no es así, visita <a href="http://www.gnu.org/licenses/">http://www.gnu.org/
 
     @classmethod
     def show_box(cls, parent: QWidget = None):
+        """Abre un AboutBox para su uso rápido.
+
+        Crea un objeto instancia de AboutBox y a la vez abre el Dialog.
+
+        Note:
+            Puede ser llamado sin necesidad de instanciar un objeto previamente.
+
+        Args:
+            parent (QWidget): Padre de este QDialog. Defaults to None.
+        """
         box = AboutBox(parent)
         box.exec_()

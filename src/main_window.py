@@ -23,10 +23,11 @@ from datetime import datetime
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLabel, QWidget, QPushButton, QMenu
 from PyQt5.QtWidgets import QHBoxLayout, QTextEdit, QSystemTrayIcon, QAction, qApp
 from PyQt5.QtGui import QPixmap, QIcon
-import resources
+
+import resources # # pylint: disable=W0611
 from settings import Settings
 from options_dialog import OptionsDialog
-from GuiTools import StatusPanel, QuestionDialog, AboutBox
+from gui_tools import StatusPanel, QuestionDialog, AboutBox
 
 class MainWindow(QMainWindow):
     """Ventana principal de la aplicación.
@@ -184,7 +185,7 @@ class MainWindow(QMainWindow):
         if flag:
             self.text_log.verticalScrollBar().setValue(self.text_log.verticalScrollBar().maximum())
 
-    def closeEvent(self, event):
+    def closeEvent(self, event): # pylint: disable=C0103
         """Cierra la ventana. Pero no la aplicación.
         """
         event.ignore()

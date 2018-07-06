@@ -21,9 +21,10 @@ from PyQt5.QtWidgets import QDialog, QVBoxLayout, QCheckBox, QLabel, QLineEdit, 
 from PyQt5.QtWidgets import QFileDialog, QWidget
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QSysInfo
-import resources
+
+import resources # pylint: disable=W0611
 from settings import Settings
-from GuiTools import HLayout
+from gui_tools import HLayout
 
 class OptionsDialog(QDialog):
     """Dialog que proporciona inputs para la configuración del programa.
