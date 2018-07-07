@@ -78,7 +78,7 @@ class RequestsHandler():
             "client_secret": Settings.client_secret,
             "username": username,
             "password": password,
-            "scope": "*"
+            "scope": "manejar-socios"
         }
         try:
             request = requests.post(Settings.get_token_url(), data=data)
