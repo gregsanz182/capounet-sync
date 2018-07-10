@@ -113,7 +113,7 @@ class AccessDialog(QDialog):
         self.layout.addSpacing(20)
         self.layout.addWidget(QLabel("Dominio:"))
         self.layout.addWidget(self.domain_input)
-        self.layout.addWidget(QLabel("Nombre de usuario:"))
+        self.layout.addWidget(QLabel("Correo de administrador:"))
         self.layout.addWidget(self.username_input)
         self.layout.addWidget(QLabel("Constraseña:"))
         self.layout.addWidget(self.password_input)
