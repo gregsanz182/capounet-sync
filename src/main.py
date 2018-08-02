@@ -38,7 +38,7 @@ def main():
     client_id = 2 #ID del cliente en Laravel Passport. Por defecto es 2, y no debería cambiarse.
 
     #Secreto del cliente. Debe ser generado por Laravel Passport en la API.
-    client_secret = "myaXdWXreQQmVBYN1r02g75F8GRQ60UsCVCcv0cP"
+    client_secret = ""
 
     try:
         main_app = QtSingleApplication(client_secret, sys.argv)
